@@ -97,6 +97,15 @@ export class GitCli {
     }
   }
 
+  public async log(limit = 30): Promise<string[]> {
+    try {
+      const output = await this.run(['log', `-${limit}`, '--pretty=format:%s']);
+      return output ? output.split('\n').filter(Boolean) : [];
+    } catch {
+      return [];
+    }
+  }
+
   private emptyGitState(): GitState {
     return {
       isGit: false,

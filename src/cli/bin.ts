@@ -11,6 +11,10 @@ import {
   runMediaPlan,
   runGenerateDiagram,
   runGenerateCard,
+  runGitHubPlan,
+  runGitHubApply,
+  runInitCommunity,
+  runReleasePlan,
 } from './commands.js';
 
 const program = new Command();
@@ -18,7 +22,7 @@ const program = new Command();
 program
   .name('pomade')
   .description('Make every repo worth opening — Agent-native GitHub repository presentation and maintenance layer')
-  .version('0.1.0-alpha.1');
+  .version('1.0.0-rc.1');
 
 program
   .command('scan')
@@ -130,6 +134,61 @@ media
   .option('--output <path>', 'Destination SVG file path', 'docs/media/social-preview.svg')
   .action(async (targetPath, options) => {
     const exitCode = await runGenerateCard(targetPath, options);
+    process.exit(exitCode);
+  });
+
+const github = program
+  .command('github')
+  .description('Manage GitHub repository topics, description, community files, and remote sync');
+
+github
+  .command('plan')
+  .description('Generate evidence-backed repository description and topic recommendations')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--json', 'Output recommendations as JSON')
+  .action(async (targetPath, options) => {
+    const exitCode = await runGitHubPlan(targetPath, options);
+    process.exit(exitCode);
+  });
+
+github
+  .command('apply')
+  .description('Apply repository metadata changes to remote GitHub via gh CLI (requires --approved-remote)')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--approved-remote', 'Explicit confirmation for remote repository mutations')
+  .option('--dry-run', 'Simulate command execution without executing gh network call')
+  .option('--json', 'Output execution result as JSON')
+  .action(async (targetPath, options) => {
+    const exitCode = await runGitHubApply(targetPath, options);
+    process.exit(exitCode);
+  });
+
+github
+  .command('init-community')
+  .description('Initialize issue templates, pull request template, CONTRIBUTING.md, and SECURITY.md')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--approved', 'Explicit confirmation to write community files')
+  .option('--dry-run', 'Simulate writes without modifying disk')
+  .option('--license <spdxId>', 'Optionally generate LICENSE file (e.g. MIT, Apache-2.0)')
+  .option('--author <name>', 'Author name for license copyright notice')
+  .option('--email <email>', 'Security contact email address')
+  .option('--json', 'Output plan/result as JSON')
+  .action(async (targetPath, options) => {
+    const exitCode = await runInitCommunity(targetPath, options);
+    process.exit(exitCode);
+  });
+
+const release = program
+  .command('release')
+  .description('Manage semantic versioning, changelogs, and release preparation');
+
+release
+  .command('plan')
+  .description('Inspect git commit history and prepare a semver release plan and changelog draft')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--json', 'Output release plan as JSON')
+  .action(async (targetPath, options) => {
+    const exitCode = await runReleasePlan(targetPath, options);
     process.exit(exitCode);
   });
 

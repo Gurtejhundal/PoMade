@@ -1,6 +1,6 @@
 {
   "name": "pomade",
-  "version": "0.1.0-alpha.1",
+  "version": "1.0.0-rc.1",
   "description": "Make every repo worth opening — Agent-native GitHub repository presentation and maintenance layer",
   "type": "module",
   "bin": {
@@ -8,8 +8,22 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gurtejhundal/PoMade.git"
+  },
   "scripts": {
     "build": "tsc",
+    "prepack": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -21,9 +35,10 @@
     "readme",
     "documentation",
     "cli",
-    "developer-tools"
+    "developer-tools",
+    "ai-agents"
   ],
-  "author": "",
+  "author": "Gurtej Hundal",
   "license": "MIT",
   "dependencies": {
     "commander": "^12.1.0",

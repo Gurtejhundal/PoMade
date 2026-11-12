@@ -35,6 +35,7 @@ export const DEFAULT_EXCLUDED_DIRS = new Set([
   '.terraform',
   '.idea',
   '.vscode',
+  'fixtures',
 ]);
 
 export const SENSITIVE_FILE_PATTERNS = [

@@ -1,6 +1,8 @@
 import pc from 'picocolors';
 import type { RepositorySnapshot, AuditReport, Finding, Plan } from '../core/types/schemas.js';
 import type { ApplyResult } from '../core/apply/applier.js';
+import type { GitHubMetadataPlan } from '../core/github/metadata-planner.js';
+import type { ReleasePlan } from '../core/github/release-planner.js';
 
 export function formatScanText(snapshot: RepositorySnapshot): string {
   const lines: string[] = [];
@@ -273,6 +275,55 @@ export function formatMediaPlanText(plan: {
 
   lines.push('');
   lines.push(pc.dim('Status: MEDIA PLAN ONLY — no code was executed and no screenshots were generated.'));
+  lines.push('');
+
+  return lines.join('\n');
+}
+
+export function formatGitHubMetadataText(plan: GitHubMetadataPlan): string {
+  const lines: string[] = [];
+
+  lines.push('');
+  lines.push(pc.bold(pc.cyan('Pomade GitHub Metadata Plan')));
+  lines.push(pc.dim('----------------------------------------------------'));
+  lines.push(`${pc.bold('Proposed Description:')} ${pc.green(plan.proposedDescription)}`);
+  lines.push(`${pc.bold('Proposed Topics:')}      ${plan.proposedTopics.map((t) => pc.cyan(t)).join(', ')}`);
+  lines.push('');
+  lines.push(pc.bold('Manual Execution Command:'));
+  lines.push(`  ${pc.yellow(plan.commandPreview)}`);
+  lines.push('');
+  lines.push(pc.bold('Automated Remote Update:'));
+  lines.push(`  ${pc.cyan('pomade github apply --approved-remote')}`);
+  lines.push('');
+  lines.push(pc.dim('Status: READ-ONLY METADATA PLAN — no remote changes applied.'));
+  lines.push('');
+
+  return lines.join('\n');
+}
+
+export function formatReleasePlanText(plan: ReleasePlan): string {
+  const lines: string[] = [];
+
+  lines.push('');
+  lines.push(pc.bold(pc.cyan(`Pomade Release Plan [v${plan.currentVersion} -> v${plan.proposedVersion}]`)));
+  lines.push(pc.dim('----------------------------------------------------'));
+  lines.push(`${pc.bold('Current Version:')}  ${plan.currentVersion}`);
+  lines.push(`${pc.bold('Proposed Version:')} ${pc.green(plan.proposedVersion)} (${plan.bumpType.toUpperCase()} bump)`);
+  lines.push(`${pc.bold('Tests Status:')}     ${plan.verifiedTests ? pc.green('✔ Verified') : pc.yellow('⚠ Unverified / Not detected')}`);
+  lines.push('');
+
+  if (plan.warnings.length > 0) {
+    lines.push(pc.bold(pc.yellow('Warnings:')));
+    for (const w of plan.warnings) {
+      lines.push(`  ! ${w}`);
+    }
+    lines.push('');
+  }
+
+  lines.push(pc.bold('Draft Changelog Entry:'));
+  lines.push(pc.dim(plan.changelogEntry));
+  lines.push('');
+  lines.push(pc.dim('Status: READ-ONLY RELEASE PLAN — no tags created, no packages published.'));
   lines.push('');
 
   return lines.join('\n');
