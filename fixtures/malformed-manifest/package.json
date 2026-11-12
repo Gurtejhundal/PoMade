@@ -1,0 +1,6 @@
+{
+  "name": "malformed-project",
+  "version": "1.0.0",
+  // Syntax error: unquoted key and trailing comma
+  unquoted: true,
+}

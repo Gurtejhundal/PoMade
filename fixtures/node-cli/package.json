@@ -1,0 +1,21 @@
+{
+  "name": "sample-cli",
+  "version": "1.0.0",
+  "description": "A high-performance command line tool for developer workflows",
+  "license": "MIT",
+  "bin": {
+    "sample": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}
