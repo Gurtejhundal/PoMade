@@ -139,6 +139,7 @@ export class SafeFileSystem {
 
   public async atomicWriteFile(targetPath: string, content: string): Promise<void> {
     const resolved = this.assertPathWithinRoot(targetPath);
+    await fs.mkdir(path.dirname(resolved), { recursive: true });
     const tempPath = `${resolved}.pomade.tmp.${Date.now()}`;
     await fs.writeFile(tempPath, content, 'utf-8');
     try {

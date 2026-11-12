@@ -5,6 +5,8 @@ import { AuditEngine } from '../core/audit/audit-engine.js';
 import { Planner } from '../core/plan/planner.js';
 import { PlanApplier } from '../core/apply/applier.js';
 import { DriftDetector } from '../core/drift/drift-detector.js';
+import { MediaCapturePlanner } from '../core/media/capture-plan.js';
+import { MediaOrganizer } from '../core/media/organizer.js';
 import type { Preset } from '../core/types/schemas.js';
 import {
   formatScanText,
@@ -13,6 +15,7 @@ import {
   formatDiffText,
   formatApplyText,
   formatDriftText,
+  formatMediaPlanText,
 } from './formatter.js';
 
 export async function runScan(targetPath?: string, options?: { json?: boolean }): Promise<number> {
@@ -244,6 +247,72 @@ export async function runDrift(
     return 0;
   } catch (err: any) {
     console.error(`Error during drift check: ${err.message}`);
+    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+      return 2;
+    }
+    return 5;
+  }
+}
+
+export async function runMediaPlan(targetPath?: string, options?: { json?: boolean }): Promise<number> {
+  try {
+    const resolvedPath = path.resolve(targetPath ?? process.cwd());
+    const scanner = new RepositoryScanner(resolvedPath);
+    const snapshot = await scanner.scan();
+
+    const plan = MediaCapturePlanner.createPlan(snapshot);
+
+    if (options?.json) {
+      console.log(JSON.stringify(plan, null, 2));
+    } else {
+      console.log(formatMediaPlanText(plan));
+    }
+
+    return 0;
+  } catch (err: any) {
+    console.error(`Error during media plan: ${err.message}`);
+    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+      return 2;
+    }
+    return 5;
+  }
+}
+
+export async function runGenerateDiagram(targetPath?: string, options?: { output?: string }): Promise<number> {
+  try {
+    const resolvedPath = path.resolve(targetPath ?? process.cwd());
+    const scanner = new RepositoryScanner(resolvedPath);
+    const snapshot = await scanner.scan();
+
+    const organizer = new MediaOrganizer(resolvedPath);
+    const outPath = options?.output ?? 'docs/media/architecture.svg';
+    await organizer.saveArchitectureDiagram(snapshot, outPath);
+
+    console.log(`\n✔ Architecture diagram successfully generated: ${outPath}\n`);
+    return 0;
+  } catch (err: any) {
+    console.error(`Error generating diagram: ${err.message}`);
+    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+      return 2;
+    }
+    return 5;
+  }
+}
+
+export async function runGenerateCard(targetPath?: string, options?: { output?: string }): Promise<number> {
+  try {
+    const resolvedPath = path.resolve(targetPath ?? process.cwd());
+    const scanner = new RepositoryScanner(resolvedPath);
+    const snapshot = await scanner.scan();
+
+    const organizer = new MediaOrganizer(resolvedPath);
+    const outPath = options?.output ?? 'docs/media/social-preview.svg';
+    await organizer.saveSocialCard(snapshot, outPath);
+
+    console.log(`\n✔ 1280x640 GitHub social preview card successfully generated: ${outPath}\n`);
+    return 0;
+  } catch (err: any) {
+    console.error(`Error generating social card: ${err.message}`);
     if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
       return 2;
     }

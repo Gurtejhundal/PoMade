@@ -1,0 +1,182 @@
+import type { RepositorySnapshot } from '../types/schemas.js';
+
+export class SvgGenerator {
+  public static generateArchitectureDiagram(snapshot: RepositorySnapshot): string {
+    const name = snapshot.manifests[0]?.name ?? 'Project';
+    const kind = snapshot.kind.toUpperCase();
+    const frameworks = snapshot.frameworks.slice(0, 3).join(', ') || 'Core Modules';
+    const lang = snapshot.primaryLanguage ?? 'Code';
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="100%" height="100%">
+  <title>Architecture Diagram for ${escapeXml(name)}</title>
+  <desc>System architecture diagram showing interaction between consumer, ${escapeXml(name)} core, and dependencies.</desc>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="360" rx="16" fill="url(#bgGrad)" stroke="#334155" stroke-width="1" />
+
+  <!-- Header -->
+  <text x="40" y="48" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#f8fafc">
+    ${escapeXml(name)}
+  </text>
+  <text x="40" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#94a3b8">
+    System Architecture &amp; Component Flow (${kind})
+  </text>
+
+  <!-- Node 1: Consumer -->
+  <g transform="translate(40, 130)" filter="url(#shadow)">
+    <rect width="180" height="130" rx="12" fill="url(#cardGrad)" stroke="#475569" stroke-width="1.5" />
+    <circle cx="90" cy="42" r="18" fill="#38bdf8" fill-opacity="0.2" />
+    <text x="90" y="47" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#38bdf8">👤</text>
+    <text x="90" y="82" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#f1f5f9">Client / Consumer</text>
+    <text x="90" y="104" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">CLI, API, or Browser</text>
+  </g>
+
+  <!-- Flow Arrow 1 -->
+  <g transform="translate(225, 195)">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="url(#accentGrad)" stroke-width="2.5" stroke-dasharray="4 2" />
+    <polygon points="60,-5 70,0 60,5" fill="#818cf8" />
+  </g>
+
+  <!-- Node 2: Core Application -->
+  <g transform="translate(305, 120)" filter="url(#shadow)">
+    <rect width="210" height="150" rx="12" fill="url(#cardGrad)" stroke="url(#accentGrad)" stroke-width="2" />
+    <rect x="20" y="18" width="56" height="20" rx="6" fill="#818cf8" fill-opacity="0.2" />
+    <text x="48" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#818cf8">${kind}</text>
+    <text x="105" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="17" font-weight="700" fill="#ffffff">${escapeXml(name)}</text>
+    <text x="105" y="96" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#cbd5e1">${escapeXml(lang)} Engine</text>
+    <line x1="25" y1="112" x2="185" y2="112" stroke="#475569" stroke-width="1" />
+    <text x="105" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">Verified Logic &amp; Routing</text>
+  </g>
+
+  <!-- Flow Arrow 2 -->
+  <g transform="translate(520, 195)">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="url(#accentGrad)" stroke-width="2.5" stroke-dasharray="4 2" />
+    <polygon points="60,-5 70,0 60,5" fill="#818cf8" />
+  </g>
+
+  <!-- Node 3: Dependencies & Output -->
+  <g transform="translate(590, 130)" filter="url(#shadow)">
+    <rect width="170" height="130" rx="12" fill="url(#cardGrad)" stroke="#475569" stroke-width="1.5" />
+    <circle cx="85" cy="42" r="18" fill="#a855f7" fill-opacity="0.2" />
+    <text x="85" y="47" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#a855f7">⚙️</text>
+    <text x="85" y="82" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#f1f5f9">Dependencies</text>
+    <text x="85" y="104" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">${escapeXml(frameworks)}</text>
+  </g>
+
+  <!-- Footer Watermark -->
+  <text x="40" y="325" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">
+    Generated by Pomade • Make every repo worth opening
+  </text>
+</svg>
+`;
+  }
+
+  public static generateSocialCard(snapshot: RepositorySnapshot): string {
+    const name = snapshot.manifests[0]?.name ?? 'Project';
+    const desc = snapshot.manifests[0]?.description ?? 'A verified, maintainable GitHub repository.';
+    const kind = snapshot.kind.toUpperCase();
+    const lang = snapshot.primaryLanguage ?? 'TypeScript';
+    const license = snapshot.license?.spdxId ?? 'Proprietary';
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <title>${escapeXml(name)} — GitHub Social Preview</title>
+  <defs>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <linearGradient id="brandAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="60" result="blur" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#cardBg)" />
+
+  <!-- Ambient Glow -->
+  <circle cx="1100" cy="120" r="180" fill="#38bdf8" fill-opacity="0.15" filter="url(#glow)" />
+  <circle cx="180" cy="540" r="160" fill="#818cf8" fill-opacity="0.12" filter="url(#glow)" />
+
+  <!-- Outer Border -->
+  <rect x="24" y="24" width="1232" height="592" rx="24" fill="none" stroke="#334155" stroke-width="2" />
+
+  <!-- Content Container -->
+  <g transform="translate(100, 140)">
+    <!-- Badges Row -->
+    <rect x="0" y="0" width="90" height="34" rx="8" fill="url(#brandAccent)" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="45" y="22" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#38bdf8">${kind}</text>
+
+    <rect x="105" y="0" width="110" height="34" rx="8" fill="#334155" fill-opacity="0.5" stroke="#475569" stroke-width="1" />
+    <text x="160" y="22" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1">${escapeXml(lang)}</text>
+
+    <rect x="230" y="0" width="90" height="34" rx="8" fill="#334155" fill-opacity="0.5" stroke="#475569" stroke-width="1" />
+    <text x="275" y="22" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1">${escapeXml(license)}</text>
+
+    <!-- Main Title -->
+    <text x="0" y="120" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="800" fill="url(#titleGrad)">
+      ${escapeXml(name)}
+    </text>
+
+    <!-- Tagline / Description -->
+    <text x="0" y="190" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="400" fill="#94a3b8">
+      ${escapeXml(truncate(desc, 70))}
+    </text>
+
+    <!-- Accent Divider -->
+    <line x1="0" y1="260" x2="300" y2="260" stroke="url(#brandAccent)" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Bottom Metadata -->
+    <g transform="translate(0, 310)">
+      <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#64748b">
+        VERIFIED REPOSITORY • EVIDENCE-BACKED
+      </text>
+    </g>
+  </g>
+
+  <!-- Watermark -->
+  <text x="1180" y="580" text-anchor="end" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#475569">
+    Pomade
+  </text>
+</svg>
+`;
+  }
+}
+
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function truncate(str: string, maxLen: number): string {
+  return str.length > maxLen ? str.substring(0, maxLen - 3) + '...' : str;
+}

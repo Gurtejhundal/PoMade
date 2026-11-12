@@ -234,6 +234,50 @@ export function formatDriftText(report: {
   return lines.join('\n');
 }
 
+export function formatMediaPlanText(plan: {
+  planId: string;
+  repoRoot: string;
+  uiDetection: {
+    hasRunnableUi: boolean;
+    uiKind: string;
+    framework?: string;
+    startCommand?: string;
+    reason: string;
+  };
+  captureRecommended: boolean;
+  recommendedPath: string;
+  steps: string[];
+  privacyRules: string[];
+}): string {
+  const lines: string[] = [];
+
+  lines.push('');
+  lines.push(pc.bold(pc.cyan(`Pomade Media Capture Plan [${plan.planId}]`)));
+  lines.push(pc.dim('----------------------------------------------------'));
+  lines.push(`${pc.bold('Target Repo:')}    ${plan.repoRoot}`);
+  lines.push(`${pc.bold('UI Detected:')}    ${plan.uiDetection.hasRunnableUi ? pc.green('Yes (' + plan.uiDetection.uiKind.toUpperCase() + ')') : pc.yellow('No (' + plan.uiDetection.uiKind.toUpperCase() + ')')}`);
+  lines.push(`${pc.bold('Diagnostics:')}    ${plan.uiDetection.reason}`);
+  lines.push(`${pc.bold('Recommendation:')} ${plan.captureRecommended ? pc.green('Capture UI Screenshot (' + plan.recommendedPath + ')') : pc.yellow('Skip screenshots; SVG diagram or terminal recording recommended')}`);
+  lines.push('');
+
+  lines.push(pc.bold('Privacy & Safety Rules:'));
+  for (const rule of plan.privacyRules) {
+    lines.push(`  • ${pc.yellow(rule)}`);
+  }
+  lines.push('');
+
+  lines.push(pc.bold('Execution Steps:'));
+  for (const step of plan.steps) {
+    lines.push(`  ${step}`);
+  }
+
+  lines.push('');
+  lines.push(pc.dim('Status: MEDIA PLAN ONLY — no code was executed and no screenshots were generated.'));
+  lines.push('');
+
+  return lines.join('\n');
+}
+
 function colorizeDiff(rawDiff: string): string {
   return rawDiff
     .split('\n')

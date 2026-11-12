@@ -1,6 +1,17 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { runScan, runAudit, runDoctor, runPlan, runDiff, runApply, runDrift } from './commands.js';
+import {
+  runScan,
+  runAudit,
+  runDoctor,
+  runPlan,
+  runDiff,
+  runApply,
+  runDrift,
+  runMediaPlan,
+  runGenerateDiagram,
+  runGenerateCard,
+} from './commands.js';
 
 const program = new Command();
 
@@ -85,6 +96,40 @@ program
   .option('--json', 'Output drift report as JSON')
   .action(async (targetPath, options) => {
     const exitCode = await runDrift(targetPath, options);
+    process.exit(exitCode);
+  });
+
+const media = program
+  .command('media')
+  .description('Manage repository visual assets, UI capture plans, and vector diagrams');
+
+media
+  .command('plan')
+  .description('Detect UI and generate a media capture plan (strictly skipping fake screenshots)')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--json', 'Output capture plan as JSON')
+  .action(async (targetPath, options) => {
+    const exitCode = await runMediaPlan(targetPath, options);
+    process.exit(exitCode);
+  });
+
+media
+  .command('generate-diagram')
+  .description('Generate a responsive, dark-mode compatible SVG architecture diagram')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--output <path>', 'Destination SVG file path', 'docs/media/architecture.svg')
+  .action(async (targetPath, options) => {
+    const exitCode = await runGenerateDiagram(targetPath, options);
+    process.exit(exitCode);
+  });
+
+media
+  .command('generate-card')
+  .description('Generate a compliant 1280x640 GitHub social preview card asset')
+  .argument('[path]', 'Path to repository root (defaults to cwd)')
+  .option('--output <path>', 'Destination SVG file path', 'docs/media/social-preview.svg')
+  .action(async (targetPath, options) => {
+    const exitCode = await runGenerateCard(targetPath, options);
     process.exit(exitCode);
   });
 

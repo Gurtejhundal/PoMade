@@ -1,6 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import * as path from 'node:path';
-import { runScan, runAudit, runDoctor, runPlan, runDiff, runApply } from './commands.js';
+import {
+  runScan,
+  runAudit,
+  runDoctor,
+  runPlan,
+  runDiff,
+  runApply,
+  runMediaPlan,
+  runGenerateDiagram,
+  runGenerateCard,
+} from './commands.js';
 
 describe('CLI Commands', () => {
   const fixturesDir = path.resolve(process.cwd(), 'fixtures');
@@ -84,5 +94,39 @@ describe('CLI Commands', () => {
     // Dry-run apply returns exit code 0
     const codeDry = await runApply(path.join(fixturesDir, 'node-cli'), { approved: true, dryRun: true });
     expect(codeDry).toBe(0);
+  });
+
+  it('runs media plan command in text and json mode', async () => {
+    const codeText = await runMediaPlan(path.join(fixturesDir, 'web-app'));
+    expect(codeText).toBe(0);
+
+    const codeJson = await runMediaPlan(path.join(fixturesDir, 'node-cli'), { json: true });
+    expect(codeJson).toBe(0);
+  });
+
+  it('runs media generate-diagram and generate-card commands safely', async () => {
+    const scratchDir = path.resolve(fixturesDir, 'scratch-media-cli-test');
+    const fs = await import('node:fs/promises');
+    await fs.mkdir(scratchDir, { recursive: true });
+    await fs.writeFile(
+      path.join(scratchDir, 'package.json'),
+      JSON.stringify({ name: 'media-cli-tool', version: '1.0.0' }, null, 2)
+    );
+
+    try {
+      const diagCode = await runGenerateDiagram(scratchDir, { output: 'docs/media/arch.svg' });
+      expect(diagCode).toBe(0);
+
+      const cardCode = await runGenerateCard(scratchDir, { output: 'docs/media/card.svg' });
+      expect(cardCode).toBe(0);
+
+      const diagExists = await fs.access(path.join(scratchDir, 'docs/media/arch.svg')).then(() => true).catch(() => false);
+      const cardExists = await fs.access(path.join(scratchDir, 'docs/media/card.svg')).then(() => true).catch(() => false);
+
+      expect(diagExists).toBe(true);
+      expect(cardExists).toBe(true);
+    } finally {
+      await fs.rm(scratchDir, { recursive: true, force: true });
+    }
   });
 });
