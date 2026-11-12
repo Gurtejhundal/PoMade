@@ -27,7 +27,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "pomade": "tsx src/cli/bin.ts"
+    "pomade": "tsx src/cli/bin.ts",
+    "site:dev": "npm --prefix site run dev",
+    "site:build": "npm --prefix site run build",
+    "site:start": "npm --prefix site run start"
   },
   "keywords": [
     "agent-skills",

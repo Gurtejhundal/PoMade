@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas-bg: #FBFBF9;
+  --surface-bg: #FFFFFF;
+  --subtle-bg: #F4F4F0;
+  --border-subtle: #E8E8E4;
+  --border-strong: #D1D1CB;
+  --text-primary: #111215;
+  --text-secondary: #4B5162;
+  --text-muted: #6E7381;
+  --accent: #C26526;
+  --accent-hover: #A6521A;
+  --code-bg: #F1F1EC;
+  --diff-add-bg: #E6F6EC;
+  --diff-add-text: #147938;
+  --diff-del-bg: #FFEBE9;
+  --diff-del-text: #CF222E;
+}
+
+.dark {
+  --canvas-bg: #0B0C0E;
+  --surface-bg: #14161B;
+  --subtle-bg: #1B1E26;
+  --border-subtle: #252830;
+  --border-strong: #383D4A;
+  --text-primary: #ECEFF4;
+  --text-secondary: #B0B7C3;
+  --text-muted: #8B949E;
+  --accent: #F59E0B;
+  --accent-hover: #D97706;
+  --code-bg: #16181F;
+  --diff-add-bg: #12261E;
+  --diff-add-text: #3FB950;
+  --diff-del-bg: #2D161A;
+  --diff-del-text: #F85149;
+}
+
+body {
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans, Inter, -apple-system, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom focus rings */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Code fences */
+pre, code {
+  font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
