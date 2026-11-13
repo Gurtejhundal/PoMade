@@ -1,0 +1,21 @@
+{
+  "name": "pomade",
+  "displayName": "Pomade",
+  "description": "The agent-native GitHub repository presentation, packaging, and maintenance engine. He doesn't write your code. He makes sure it looks finished.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Gurtejbir Singh",
+    "url": "https://github.com/Gurtejhundal"
+  },
+  "homepage": "https://pomade.vercel.app",
+  "repository": "https://github.com/Gurtejhundal/PoMade",
+  "skills": [
+    "skills/pomade"
+  ],
+  "suggestedPrompts": [
+    "Audit my repository outward presentation and quality",
+    "Plan and generate a polished README for this project",
+    "Check for documentation drift after recent code changes",
+    "Recommend GitHub repository topics and description"
+  ]
+}
