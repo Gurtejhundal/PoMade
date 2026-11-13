@@ -20,6 +20,8 @@
 | **Phase 6** | **Production Release:** Cross-platform matrix, Hardened security, Packaging | **COMPLETED & VERIFIED** | **4 / 4** | None |
 | **Website Phase A** | **Design & Reference Analysis:** 5 repos analyzed, brand system, mascot, specs | **COMPLETED & VERIFIED** | Docs Authored | None |
 | **Website Phase B** | **Website Shell & Homepage:** Next.js App, Tailwind, Header/Footer, Terminal Demo, Before/After Slider | **COMPLETED & VERIFIED** | 8/8 Routes Built | None |
+| **Website Phase C** | **Template Gallery:** 6 distinct templates, filter pills, preview modal, sample fixtures | **COMPLETED & VERIFIED** | 6 Templates Built | None |
+| **Website Phase D** | **Functional Studio:** Live fact editor, GFM preview, syntax raw view, unified diff, audit score, JSZip export | **COMPLETED & VERIFIED** | Client Engine Ready | None |
 
 **Overall Engine Test Suite: 87 / 87 Passed (100%) across 19 test files**
 **Website Build Status: 8 / 8 Static Routes Compiled Successfully**
