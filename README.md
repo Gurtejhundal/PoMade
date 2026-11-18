@@ -5,9 +5,9 @@
 
 <p align="center"><em>Code pushed. First impression handled.</em></p>
 
-![Manifest version](https://img.shields.io/badge/version-1.0.0--rc.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/PoMade/actions)
+![Manifest version](https://img.shields.io/badge/version-1.0.0--rc.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
 
-[Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/PoMade)
+[Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/Pomade)
 
 <p align="center"><img src="docs/media/pomade-motion.svg" alt="PoMade animated cover" width="800" /></p>
 
