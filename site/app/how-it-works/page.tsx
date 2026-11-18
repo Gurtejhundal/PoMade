@@ -6,28 +6,28 @@ export default function HowItWorksPage() {
   const steps = [
     [
       '01',
-      'Give the repo a direction.',
-      'Choose Simple, Signature, or Motion. Set a sharp one-liner, About text, and topics in .pomade.json. Keep product claims specific and reviewed.',
+      'Understand the real project.',
+      'The presentation agent inspects the README, implementation, manifests, workflows, existing media, and actual release history. It explains the project before proposing its presentation.',
     ],
     [
       '02',
-      'Inspect the real project.',
-      'PoMade reads manifests, configured scripts, licenses, workflows, and existing assets. A dependency is evidence of a dependency; it is not proof of a feature or a successful test run.',
+      'Choose your pitch and style.',
+      'PoMade offers three factual About pitch lines and asks you to choose Simple, Signature, or Motion. It derives relevant topics and saves your choices in .pomade.json for future pushes.',
     ],
     [
       '03',
-      'Review once. Maintain on pushes.',
-      'Review pomade diff, then adopt managed README sections with pomade apply --approved. The installed workflow runs after pushes to main and updates only generated sections.',
+      'Show the actual product.',
+      'The host agent reuses accurate project screenshots and GIFs, or uses available tools to capture the running product when needed. Motion adds a decorative animated cover with a static alternative. A capture plan alone is not a recording.',
     ],
     [
       '04',
-      'Keep the rest of the front door in step.',
-      'The Action commits README and cover changes with GitHub’s workflow token. An optional POMADE_TOKEN with Administration write permission updates About, homepage, and topics. Existing topics are preserved.',
+      'Review and apply the presentation.',
+      'Review the concrete README and metadata changes. PoMade preserves useful manual content and completes authorized edits. If GitHub access is missing, it identifies the blocked metadata update after preparing the independent local changes.',
     ],
     [
       '05',
-      'Show the actual product.',
-      'Check real screenshots or GIF recordings into docs/media and point screenshot/demo at them in .pomade.json. Motion adds a local animated SVG cover plus a static alternative. It does not pretend a generated cover is a screenshot.',
+      'Maintain it with later pushes.',
+      'Reuse the chosen pitch and style. The Action refreshes managed sections and covers; optional metadata access updates About and topics. Verify the actual result separately from the push. Release history is inspected; publishing still requires a release request.',
     ],
   ];
   return (
@@ -39,8 +39,8 @@ export default function HowItWorksPage() {
         <em>The repo is the product.</em>
       </h1>
       <p className="page-lead">
-        A coding-agent skill for the first pass. A GitHub Action for every pass
-        after that.
+        A presentation agent inside your coding agent. Checked CLI operations
+        for edits. A GitHub Action for routine maintenance after setup.
       </p>
       <div className="workflow-steps">
         {steps.map(([n, title, description]) => (

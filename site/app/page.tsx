@@ -229,12 +229,14 @@ export default function HomePage() {
         <h2>How it works</h2>
         <ol className="markdown-steps">
           <li>
-            <strong>Read the project.</strong> Inspect manifests, scripts,
-            documentation, licenses, and existing media.
+            <strong>Understand the project.</strong> The presentation agent
+            inspects implementation, documentation, real media, and release
+            history.
           </li>
           <li>
-            <strong>Choose the first impression.</strong> Simple, Signature, or
-            Motion. Your facts, your voice.
+            <strong>Choose your pitch and style.</strong> Pick from three factual
+            About lines and Simple, Signature, or Motion. PoMade derives topics
+            and reuses accurate project media.
           </li>
           <li>
             <strong>Review the diff.</strong> Inspect a saved plan before

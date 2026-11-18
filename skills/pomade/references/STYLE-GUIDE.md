@@ -11,9 +11,11 @@ Lead with concrete user outcomes:
 - **Libraries & APIs:** Title/Tagline → Code call snippet → Expected output → Installation → API essentials → License.
 
 ## 3. Presets
-- **`minimal` (default):** Clean, fast scan. Concise bullets, 1 verified quickstart command block, 0–3 badges. Ideal for CLI tools, early prototypes, and utilities.
-- **`studio`:** Visual presentation. Hero structure, spacious layout, architecture diagram, use cases. Ideal for web apps and flagship projects.
-- **`maintainer`:** Complete OSS hygiene. Contributing guide, security policies, test commands, release status. Ideal for active public open-source repositories.
+- **`minimal` / Simple:** Clean, fast scan. Concise bullets, a verified quickstart command block, restrained badges. Good for CLI tools, prototypes, and utilities.
+- **`signature` / Signature:** Centered identity, concise badges, real product image. Good for a recognizable project with a useful screenshot.
+- **`animated` / Motion:** Animated identity cover, real product GIF when available, static alternatives. Distinguish decoration from a recording of the working product.
+
+Ask the user to choose on first use; do not silently pick a preset. Legacy CLI presets `studio` and `maintainer` map to Signature.
 
 ## 4. Markdown Hygiene
 - Use GitHub Flavored Markdown (GFM).

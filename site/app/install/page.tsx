@@ -45,6 +45,11 @@ export default function InstallPage() {
           Only want to make a README? <Link href="/studio">Open Studio</Link>,
           edit the facts, and download a kit.
         </p>
+        <p>
+          The updated guided agent flow is currently on the repository’s main
+          branch. The v1.0.1 release archives are unchanged. Use a source checkout for the updated flow
+          until the next release.
+        </p>
       </section>
       <section className="markdown-section" id="codex">
         <h2>2a. Add PoMade to Codex</h2>
@@ -97,7 +102,15 @@ export default function InstallPage() {
       </section>
       <section className="markdown-section" id="first-run">
         <h2>3. Adopt your first repository</h2>
-        <p>Run these inside the repository you want to polish:</p>
+        <p>
+          In your coding agent, invoke PoMade and say: “Understand this project
+          and prepare its GitHub presentation.” It inspects the project, media,
+          and release history, suggests three About pitches, and asks which pitch
+          and README style you want. It then derives topics and prepares the
+          changes using real project assets. Your choices are reused on later
+          pushes.
+        </p>
+        <p>For manual CLI setup, run these inside the target repository:</p>
         <CodeBlock>
           {
             'pomade init --preset signature --approved\npomade diff\n# Review the proposed change before continuing\npomade apply --approved'

@@ -31,8 +31,8 @@
       "description": "Configure a concise About, homepage, and curated topics. Sync metadata with an administration-scoped token while preserving existing topics."
     },
     {
-      "title": "A coding-agent companion",
-      "description": "A Codex and Claude Code plugin with bundled agent context hooks. Optional local Git pre-push checks preserve existing hooks."
+      "title": "Your presentation agent",
+      "description": "Inspects the project, offers About pitches and README styles, derives topics, and prepares real media and reviewed changes inside Codex or Claude Code."
     },
     {
       "title": "Preview before writing",

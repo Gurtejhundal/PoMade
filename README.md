@@ -5,9 +5,9 @@
 
 <p align="center"><em>Code pushed. First impression handled.</em></p>
 
-![Manifest version](https://img.shields.io/badge/version-1.0.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/PoMade/actions)
+![Manifest version](https://img.shields.io/badge/version-1.0.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
 
-[Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/PoMade)
+[Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/Pomade)
 
 <p align="center"><img src="docs/media/pomade-motion.svg" alt="PoMade animated cover" width="800" /></p>
 
@@ -46,7 +46,7 @@ npm link
 - **Three README styles** — Simple for a clear first run, Signature for a distinct identity, and Motion for an animated cover and real demo media.
 - **Polish after a push** — A GitHub Action maintains marked README sections and cover assets on pushes to main. Text outside managed sections stays yours.
 - **The whole front door** — Configure a concise About, homepage, and curated topics. Sync metadata with an administration-scoped token while preserving existing topics.
-- **A coding-agent companion** — A Codex and Claude Code plugin with bundled agent context hooks. Optional local Git pre-push checks preserve existing hooks.
+- **Your presentation agent** — Inspects the project, offers About pitches and README styles, derives topics, and prepares real media and reviewed changes inside Codex or Claude Code.
 - **Preview before writing** — Review a saved plan with target hashes, then apply that exact plan. Stale targets, escaping paths, and malformed markers are rejected.
 <!-- pomade:end features -->
 
@@ -117,7 +117,15 @@ pomade apply --plan /tmp/pomade-plan.json --approved
 
 [Setup, permissions, and branch-protection details](docs/PUSH_WORKFLOW.md).
 
-## Agent plugin
+## Your repository presentation agent
+
+Invoke PoMade in your coding agent: **“Understand this project and prepare its GitHub presentation.”**
+
+PoMade inspects the project, real media, and release history; offers three About pitch lines; and asks you to choose a pitch and Simple, Signature, or Motion. It then derives topics, reuses accurate screenshots or GIFs, and prepares a concrete README/config diff. Existing hand-written content stays part of the review.
+
+Choices are saved for later pushes. The host coding agent handles analysis and available capture tools; the CLI applies checked operations, and the Action maintains managed sections. PoMade does not run a separate background model or publish an unrequested release.
+
+This updated guided flow is on `main`; the published v1.0.1 archives are unchanged. Load a current source checkout to use it before the next release.
 
 The portable skill lives in [`skills/pomade`](skills/pomade/SKILL.md). The Claude Code plugin can be loaded from a local checkout:
 

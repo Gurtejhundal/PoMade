@@ -1,6 +1,19 @@
 # Keep presentation in the push workflow
 
-PoMade has two entry points: a portable coding-agent skill for the initial review and a GitHub Action for maintenance after pushes.
+PoMade acts as a repository presentation agent inside Codex or Claude Code. The plugin is its installation package; the CLI performs checked file and metadata operations, and a GitHub Action maintains approved presentation after pushes. It does not run a separate background model.
+
+## Guided first use
+
+Invoke PoMade inside the target repository: “Understand this project and prepare its GitHub presentation.” It inspects the implementation, README, existing assets, tags, and published releases before proposing changes.
+
+1. It explains the project and offers three factual About pitch lines.
+2. You choose the pitch and Simple, Signature, or Motion (or keep your existing README).
+3. It derives relevant topics, selects accurate project media, and prepares the README and config. If a real capture is needed, the host agent uses available recording tools; `pomade media plan` only provides a capture plan.
+4. It reviews the concrete diff and completes authorized edits. GitHub access is checked when applying metadata; missing access does not prevent independent local preparation.
+
+Your choices are stored in `.pomade.json` and reused on later pushes. The Action refreshes managed content; it does not make new creative choices or record the product. Releases are inspected, and only published when requested.
+
+The commands below are the manual CLI path. They do not provide the agent's conversational analysis or pitch suggestions.
 
 ## Install from source
 

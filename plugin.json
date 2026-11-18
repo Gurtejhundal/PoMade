@@ -20,7 +20,7 @@
       "hooks": "./hooks/hooks.json",
       "interface": {
         "displayName": "PoMade",
-        "shortDescription": "Repository polish on every push.",
+        "shortDescription": "Your repository presentation agent.",
         "longDescription": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
         "developerName": "Gurtej Hundal",
         "category": "Developer Tools",
@@ -32,7 +32,7 @@
         "composerIcon": "./assets/icon.png",
         "logo": "./assets/icon.png",
         "defaultPrompt": [
-          "Use PoMade to prepare this repository before pushing.",
+          "Understand this project, suggest three About pitch lines, and ask me which pitch and README style to use before preparing its presentation.",
           "Set up PoMade hooks and the push workflow."
         ]
       }

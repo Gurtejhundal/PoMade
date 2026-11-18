@@ -6,7 +6,7 @@ export const FEATURES = [
   {
     id: 'inspect',
     title: 'Start with the actual project',
-    text: 'Scan manifests, configured scripts, languages, frameworks, licenses, Git state, documentation, and media. The audit highlights missing presentation signals with a prioritized report.',
+    text: 'The presentation agent reads the project, relevant implementation, existing media, and release history. It suggests three factual About pitches, asks for your pitch and style, and derives topics from the project.',
     command: 'pomade scan\npomade audit',
     detail:
       'Read-only inspection. A score describes presentation checks; it does not certify product quality.',

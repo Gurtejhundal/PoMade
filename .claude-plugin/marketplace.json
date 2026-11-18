@@ -7,7 +7,7 @@
     {
       "name": "pomade",
       "source": "./",
-      "description": "Repository polish on every push.",
+      "description": "Your repository presentation agent.",
       "version": "1.0.1"
     }
   ],
