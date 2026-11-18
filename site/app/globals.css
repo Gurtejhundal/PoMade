@@ -1667,3 +1667,216 @@ a {
     padding: 0;
   }
 }
+
+/* Website navigation and documentation keep the same Markdown vocabulary. */
+.document-header {
+  max-width: 1080px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--line);
+  gap: 24px;
+}
+.document-header nav {
+  gap: 20px;
+  flex: 1;
+  justify-content: flex-end;
+  font-size: 13px;
+}
+.site-wordmark {
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+}
+.site-wordmark span {
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: var(--muted);
+}
+.readme-page {
+  max-width: 940px;
+  margin: auto;
+  padding: 48px 24px 72px;
+}
+.doc-breadcrumb {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.readme-page > h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: -1.2px;
+  line-height: 1.2;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.doc-lead {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 20px 0 28px;
+}
+.page-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 22px;
+  font-size: 14px;
+  padding-left: 17px;
+  border-left: 3px solid var(--line);
+  margin: 25px 0 40px;
+}
+.readme-page .markdown-section {
+  margin: 40px 0 0;
+}
+.markdown-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 24px 0;
+}
+.markdown-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.markdown-table-wrap th,
+.markdown-table-wrap td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid var(--line);
+  vertical-align: top;
+}
+.markdown-table-wrap tr:nth-child(even) {
+  background: var(--code);
+}
+.copy-code {
+  position: relative;
+  margin: 20px 0;
+}
+.copy-code pre {
+  padding-right: 92px;
+  margin: 0;
+  border: 1px solid var(--line);
+}
+.copy-code button {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  padding: 4px 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.readme-page pre {
+  background: var(--code);
+  padding: 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.readme-page details {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.readme-page summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.readme-page details p {
+  margin-top: 14px;
+}
+.section-index {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+.release-label {
+  font-size: 11px;
+  vertical-align: middle;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px 9px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.function-index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 36px;
+}
+.function-index > div {
+  position: relative;
+  padding: 22px 0 22px 30px;
+  border-bottom: 1px solid var(--line);
+}
+.function-index > div > span {
+  position: absolute;
+  left: 0;
+  top: 26px;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  color: var(--muted);
+}
+.function-index h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+.function-index p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 760px) {
+  .document-header {
+    flex-wrap: wrap;
+    padding: 17px 20px 13px;
+    gap: 12px;
+  }
+  .document-header .theme-button {
+    margin-left: auto;
+  }
+  .document-header nav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 12px 20px;
+  }
+  .readme-page {
+    padding: 32px 20px 50px;
+  }
+  .function-index {
+    grid-template-columns: 1fr;
+  }
+  .page-toc {
+    font-size: 13px;
+  }
+  .copy-code pre {
+    padding-top: 40px;
+    padding-right: 20px;
+  }
+}

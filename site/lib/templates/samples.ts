@@ -12,7 +12,7 @@ export const POMADE_SAMPLE: PresentationFacts = {
   testCommand: 'npm test',
   license: 'MIT',
   licensePath: 'LICENSE',
-  version: '1.0.0-rc.1',
+  version: '1.0.0',
   workflowPath: '.github/workflows/ci.yml',
   logoUrl: 'docs/media/pomade-mascot.png',
   screenshotUrl: 'docs/media/site-preview.png',

@@ -134,7 +134,7 @@ export default function StudioPage() {
       }
       zip.file(
         'POMADE-SETUP.md',
-        '# Finish your setup\n\nReview all claims and commands before committing. Copy the README, configuration, and workflow into your repository. Pin the action to a reviewed commit SHA. Add POMADE_TOKEN (Administration: write) only if you want automatic About/topics updates. The workflow assumes main. Keep your existing LICENSE; this bundle does not grant a license.\n\nTo include screenshots or demo GIFs, check real captures into docs/media and add screenshot/demo paths to .pomade.json. README commands are authored input, not executed or verified by Studio.\n'
+        '# Finish your setup\n\nReview all claims and commands before committing. Copy the README, configuration, and workflow into your repository. Pin the action to a reviewed commit SHA. Add POMADE_TOKEN (Administration: write) only if you want automatic About/topics updates. The workflow assumes main. Keep your existing LICENSE; this bundle does not grant a license.\n\nTo include screenshots or demo GIFs, check real captures into docs/media and add screenshot/demo paths to .pomade.json. README commands are authored input, not executed or verified by Studio.\n\nOptional local push check: after installing the CLI and adopting the README, run pomade hooks install --approved. Existing hooks and custom hook managers are preserved. See https://pomade-swart.vercel.app/install for agent hooks and installation.\n'
       );
       download(
         await zip.generateAsync({ type: 'blob' }),

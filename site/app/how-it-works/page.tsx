@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+export const metadata: Metadata = { title: 'Push workflow — PoMade' };
 import Link from 'next/link';
 import { ArrowRight, GitBranch } from 'lucide-react';
 export default function HowItWorksPage() {
@@ -76,6 +78,21 @@ export default function HowItWorksPage() {
         The generated workflow assumes a branch named main. Protected branches
         may require a pull request or repository-specific workflow adjustment.
       </p>
+      <section className="document-section">
+        <h2>Before the push: optional hooks</h2>
+        <p>
+          Agent hooks add context when a session starts or a shell command is
+          about to push. Install the optional Git check with{' '}
+          <code>pomade hooks install --approved</code> to stop stale or
+          uncommitted generated presentation before a push. The check never
+          changes files or stages your work.
+        </p>
+        <p>
+          <Link href="/install#hooks">
+            Hook setup, permissions, and removal →
+          </Link>
+        </p>
+      </section>
       <Link className="text-link" href="/docs">
         Read the command reference
         <ArrowRight size={14} />

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TemplateSwitcher } from '../components/TemplateSwitcher';
+import { INSTALL_COMMAND, VERSION, FEATURES, RELEASE } from '../lib/product';
 import { StarHistory } from '../components/StarHistory';
 const repo = 'https://github.com/Gurtejhundal/PoMade';
 function Shield({
@@ -42,7 +43,7 @@ export default function HomePage() {
           PoMade makes the repository worth opening.
         </p>
         <p className="readme-anchor-links">
-          <a href="#installation">Installation</a>
+          <Link href="/install">Installation</Link>
           <span> · </span>
           <a href="#how-it-works">How it works</a>
           <span> · </span>
@@ -62,7 +63,7 @@ export default function HomePage() {
           </a>
           <Shield
             label="version"
-            value="1.0.0-rc.1"
+            value={VERSION}
             color="#24292f"
             href={`${repo}/blob/main/package.json`}
           />
@@ -124,6 +125,25 @@ export default function HomePage() {
         </blockquote>
       </section>
 
+      <section className="markdown-section" id="functions">
+        <h2>The finishing tools, together.</h2>
+        <div className="function-index">
+          {FEATURES.map((f, i) => (
+            <div key={f.id}>
+              <span>0{i + 1}</span>
+              <h3>
+                <Link href={`/features#${f.id}`}>{f.title}</Link>
+              </h3>
+              <p>{f.text}</p>
+            </div>
+          ))}
+        </div>
+        <p>
+          <Link href="/features">Explore every function →</Link> ·{' '}
+          <Link href="/install#hooks">Understand the hooks →</Link>
+        </p>
+      </section>
+
       <section className="markdown-section" id="status">
         <h2>Status</h2>
         <div className="flat-badge-row status-readme-badges">
@@ -141,8 +161,8 @@ export default function HomePage() {
             href="#templates"
           />
           <Shield
-            label="source"
-            value="release candidate"
+            label="release"
+            value="v1.0.0"
             color="#9a6700"
             href={`${repo}/blob/main/package.json`}
           />
@@ -154,8 +174,8 @@ export default function HomePage() {
           />
         </div>
         <p className="markdown-note">
-          Source installation is available. Releases and npm publication are
-          separate publishing steps.
+          <a href={RELEASE}>Download v1.0.0</a>. Install the packaged CLI from
+          GitHub Releases.
         </p>
       </section>
 
@@ -183,13 +203,9 @@ export default function HomePage() {
 
       <section className="markdown-section" id="installation">
         <h2>Installation</h2>
-        <p>Build from source with Node.js 22 or newer:</p>
+        <p>Install the release package with Node.js 22 or newer:</p>
         <pre>
-          <code>
-            {
-              'git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link'
-            }
-          </code>
+          <code>{INSTALL_COMMAND}</code>
         </pre>
         <p>Then, inside the project you want to polish:</p>
         <pre>
@@ -205,7 +221,7 @@ export default function HomePage() {
           your code.
         </p>
         <p>
-          <Link href="/docs">Full command reference →</Link>
+          <Link href="/install">Agent installation, hooks, and setup →</Link>
         </p>
       </section>
 
@@ -291,7 +307,11 @@ export default function HomePage() {
           workflow. The Action keeps it maintained after the push.
         </p>
         <pre>
-          <code>{'claude --plugin-dir /absolute/path/to/PoMade'}</code>
+          <code>
+            {
+              'codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0\ncodex plugin add pomade@pomade'
+            }
+          </code>
         </pre>
         <p>
           Other agents that support portable skills can install{' '}

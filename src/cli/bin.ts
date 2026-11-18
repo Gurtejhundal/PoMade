@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander';
+import { managePushHook, checkPresentation } from '../core/sync/hooks.js';
+import * as path from 'node:path';
 import {
   runInit,
   runSync,
@@ -26,7 +28,7 @@ program
   .description(
     'Make every repo worth opening — Agent-native GitHub repository presentation and maintenance layer'
   )
-  .version('1.0.0-rc.1');
+  .version('1.0.0');
 
 program
   .command('scan')
@@ -306,5 +308,34 @@ program
   .action(async (targetPath, options) => {
     process.exit(await runSync(targetPath, options));
   });
+
+const hooks = program
+  .command('hooks')
+  .description('Optional local pre-push checks; existing hooks are preserved');
+for (const command of ['install', 'status', 'uninstall', 'check'] as const) {
+  hooks
+    .command(command)
+    .argument('[path]')
+    .option('--approved', 'Authorize hook installation or removal')
+    .action(async (targetPath, options) => {
+      try {
+        const root = path.resolve(targetPath ?? process.cwd());
+        const result =
+          command === 'check'
+            ? await checkPresentation(root)
+            : await managePushHook(root, command, options.approved);
+        console.log(JSON.stringify(result, null, 2));
+        if ('current' in result && !result.current) {
+          console.error(
+            'Presentation is out of date or uncommitted. Run pomade sync --approved, review the diff, commit the presentation, then push again.'
+          );
+          process.exitCode = 1;
+        }
+      } catch (error: any) {
+        console.error(`PoMade hooks: ${error.message}`);
+        process.exitCode = 1;
+      }
+    });
+}
 
 program.parse(process.argv);

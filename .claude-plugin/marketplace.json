@@ -1,0 +1,17 @@
+{
+  "name": "pomade",
+  "owner": {
+    "name": "Gurtej Hundal"
+  },
+  "plugins": [
+    {
+      "name": "pomade",
+      "source": "./",
+      "description": "Keep README, real media, About, and topics in step with the code you push.",
+      "version": "1.0.0"
+    }
+  ],
+  "metadata": {
+    "description": "PoMade repository presentation: skills and optional local hooks."
+  }
+}

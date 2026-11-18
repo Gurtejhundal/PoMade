@@ -32,7 +32,7 @@
     },
     {
       "title": "A coding-agent companion",
-      "description": "The bundled skill includes presentation in requested commit and push workflows. A Claude Code plugin manifest is included."
+      "description": "A Codex and Claude Code plugin with bundled agent context hooks. Optional local Git pre-push checks preserve existing hooks."
     },
     {
       "title": "Preview before writing",

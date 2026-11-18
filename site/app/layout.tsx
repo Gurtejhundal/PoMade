@@ -5,14 +5,17 @@ import { Footer } from '../components/Footer';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pomade-swart.vercel.app'),
-  title: 'Pomade — Make every repo worth opening',
+  title: {
+    default: 'PoMade — Code pushed. First impression handled.',
+    template: '%s',
+  },
   description:
     'Code pushed. First impression handled. Three README styles, a coding-agent skill, and a push workflow for repository presentation.',
   icons: {
     icon: '/pomade-mascot.png',
   },
   openGraph: {
-    title: 'Pomade — Make every repo worth opening',
+    title: 'PoMade — Code pushed. First impression handled.',
     description:
       'The agent-native repository presentation and maintenance layer. Creating polished READMEs, diagrams, and metadata from verifiable code evidence.',
     images: ['/social-preview.svg'],

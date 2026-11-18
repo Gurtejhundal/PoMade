@@ -11,7 +11,9 @@ export function Footer() {
         <a href="https://github.com/Gurtejhundal/PoMade/blob/main/LICENSE">
           MIT license
         </a>
+        <a href="/how-it-works">Workflow</a>
         <a href="/docs">Documentation</a>
+        <a href="/changelog">Releases</a>
         <a
           href="https://github.com/Gurtejhundal/PoMade"
           aria-label="PoMade on GitHub"

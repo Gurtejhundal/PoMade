@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require(require('path').join(process.env.PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT, 'hooks/context.cjs'))\"",
+            "timeout": 5,
+            "statusMessage": "Checking PoMade presentation context"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require(require('path').join(process.env.PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT, 'hooks/context.cjs'))\"",
+            "timeout": 5,
+            "statusMessage": "Checking PoMade presentation context"
+          }
+        ]
+      }
+    ]
+  }
+}

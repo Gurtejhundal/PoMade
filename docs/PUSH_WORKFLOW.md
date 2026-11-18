@@ -12,7 +12,7 @@ npm run build
 npm link
 ```
 
-Development and the GitHub Action use Node.js 22 or newer. The CLI runtime remains compatible with Node.js 18 or newer; the website build requires Node.js 20.9 or newer.
+Development and the GitHub Action use Node.js 22 or newer. The CLI and local hooks require Node.js 22 or newer; the website build requires Node.js 20.9 or newer.
 
 Inside your target repository:
 
@@ -68,3 +68,13 @@ Other agents that support portable `SKILL.md` directories can install `skills/po
 Releases remain an explicit owner publishing operation. PoMade drafts release notes and version suggestions; it never creates fictitious versions or assets.
 
 PoMade's checked-in site preview is a real local browser capture. The CLI GIF is typeset playback of actual captured CLI stdout, not a screen recording. An animation and still image are linked separately so the documentation remains usable without motion.
+
+## Optional hooks
+
+Bundled agent hooks add context at session start and before shell git push calls. They run only after the host enables/trusts them; they do not perform file or remote mutations.
+
+`pomade hooks install --approved` installs a local Git pre-push check after configuration. The check compares generated README/covers and requires presentation changes to be committed. If stale, run `pomade sync --approved`, review, commit, and retry the push. It does not stage or commit anything itself.
+
+`pomade hooks status` reports installation. `pomade hooks uninstall --approved` removes only the exact managed hook. Existing hooks and custom core.hooksPath settings are preserved; add `pomade hooks check` to an existing hook manager instead. Hooks are local per clone and can be bypassed by Git, so they do not replace the after-push Action.
+
+Codex installation: `codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0`, then `codex plugin add pomade@pomade`. Open a new chat or restart, select PoMade, and review/trust its hooks. This repository marketplace is distinct from public-directory approval.

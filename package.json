@@ -1,6 +1,6 @@
 {
   "name": "pomade",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "description": "Code pushed. First impression handled. README, media, About, and topics maintained alongside your code.",
   "type": "module",
   "bin": {
@@ -14,10 +14,14 @@
     "README.md",
     "LICENSE",
     "action.yml",
-    ".claude-plugin"
+    ".claude-plugin",
+    "plugin.json",
+    ".agents",
+    "hooks",
+    "assets"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "repository": {
     "type": "git",

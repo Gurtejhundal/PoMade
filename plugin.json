@@ -1,18 +1,41 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pomade",
-  "displayName": "Pomade",
-  "description": "Code pushed. First impression handled. README, real media, About, and topics maintained alongside your code.",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
+  "description": "Keep README, real media, About, and topics in step with the code you push.",
   "author": {
-    "name": "Gurtejbir Singh",
+    "name": "Gurtej Hundal",
     "url": "https://github.com/Gurtejhundal"
   },
-  "homepage": "https://github.com/Gurtejhundal/PoMade",
-  "repository": "https://github.com/Gurtejhundal/PoMade",
-  "skills": ["skills/pomade"],
-  "suggestedPrompts": [
-    "Prepare my repository presentation before pushing",
-    "Set up automatic README, About, and topics maintenance on pushes",
-    "Show Simple, Signature, and Motion README options"
-  ]
+  "homepage": "https://pomade-swart.vercel.app",
+  "repository": "https://github.com/Gurtejhundal/Pomade",
+  "license": "MIT",
+  "keywords": [
+    "readme",
+    "github-actions",
+    "developer-tools"
+  ],
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json",
+      "interface": {
+        "displayName": "PoMade",
+        "shortDescription": "Code pushed. First impression handled.",
+        "longDescription": "Inspect repository facts, choose one of three README styles, review changes, and maintain the presentation on pushes. Includes optional local hooks.",
+        "developerName": "Gurtej Hundal",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://pomade-swart.vercel.app",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
+        "defaultPrompt": [
+          "Use PoMade to prepare this repository before pushing.",
+          "Set up PoMade hooks and the push workflow."
+        ]
+      }
+    }
+  }
 }

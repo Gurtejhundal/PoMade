@@ -1,5 +1,38 @@
-import { Terminal } from 'lucide-react';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import { INSTALL_COMMAND } from '../../lib/product';
+export const metadata: Metadata = { title: 'Command reference — PoMade' };
 const commands = [
+  [
+    'pomade hooks install --approved',
+    'Install the optional local Git pre-push check. Preview without --approved. Existing hooks and custom hook paths are preserved.',
+  ],
+  [
+    'pomade hooks status',
+    'Report whether this clone has the PoMade Git hook installed. Read-only.',
+  ],
+  [
+    'pomade hooks check',
+    'Check generated README/cover freshness and whether presentation changes are committed. Exit 1 when a refresh or commit is needed. No writes.',
+  ],
+  [
+    'pomade hooks uninstall --approved',
+    'Remove only the exact PoMade-managed pre-push hook. Never removes another tool’s hook.',
+  ],
+  ['pomade doctor', 'Inspect local environment and Git configuration.'],
+  [
+    'pomade media generate-diagram',
+    'Generate a manifest-based architecture SVG in docs/media.',
+  ],
+  [
+    'pomade media generate-card',
+    'Generate a social preview SVG in docs/media.',
+  ],
+  [
+    'pomade github init-community --approved',
+    'Create missing community templates; preserve existing owner files. --license MIT creates the complete MIT license only when requested.',
+  ],
+
   [
     'pomade init --preset signature --approved',
     'Create .pomade.json and a push workflow. Existing configuration is never overwritten. Omit --approved to preview the files.',
@@ -59,24 +92,20 @@ export default function DocsPage() {
         <em>A considered repository.</em>
       </h1>
       <p className="page-lead">
-        Node.js 18 or newer for the CLI. The bundled GitHub Action uses Node.js
-        22.
+        Node.js 22 or newer. Commands run inside your target repository, or
+        accept an explicit repository path.
       </p>
       <section className="document-section">
-        <h2>Install from source</h2>
-        <div className="code-window">
-          <div>
-            <Terminal size={14} />
-            terminal
-          </div>
-          <pre>
-            <code>
-              {
-                'git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link'
-              }
-            </code>
-          </pre>
-        </div>
+        <h2>Install v1.0.0</h2>
+        <pre className="config-example">
+          <code>{INSTALL_COMMAND}</code>
+        </pre>
+        <p>
+          <Link href="/install">
+            Complete installation guide: Codex, Claude Code, Git hooks, and
+            GitHub Actions →
+          </Link>
+        </p>
         <p>
           Run PoMade inside your target repository. For a coding agent, install
           the included{' '}
@@ -114,6 +143,100 @@ export default function DocsPage() {
         </div>
       </section>
       <section className="document-section">
+        <h2>Configuration reference</h2>
+        <p>
+          All fields live in <code>.pomade.json</code>. Unknown fields and
+          invalid media paths are rejected.
+        </p>
+        <div className="markdown-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Value</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <code>preset</code>
+                </td>
+                <td>minimal | signature | animated</td>
+                <td>The README style. Defaults to signature.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>name / tagline / description</code>
+                </td>
+                <td>text</td>
+                <td>Project identity and reviewed About copy.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>topics</code>
+                </td>
+                <td>up to 20 topic strings</td>
+                <td>
+                  Lowercase letters, numbers, and hyphens. Existing remote
+                  topics are preserved.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>homepage</code>
+                </td>
+                <td>HTTPS URL</td>
+                <td>Public project or documentation website.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>installCommand / runCommand / testCommand</code>
+                </td>
+                <td>text</td>
+                <td>
+                  Commands to document, not commands for PoMade to execute.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>features</code>
+                </td>
+                <td>title + description array</td>
+                <td>Up to 12 owner-reviewed feature descriptions.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>logo / screenshot / demo / demoPoster</code>
+                </td>
+                <td>repository-relative image paths</td>
+                <td>
+                  Existing PNG, JPEG, WebP, GIF, or SVG files inside the
+                  repository.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section className="document-section">
+        <h2>Managed sections</h2>
+        <pre className="config-example">
+          <code>
+            {
+              '<!-- pomade:start header -->\nGenerated content\n<!-- pomade:end header -->'
+            }
+          </code>
+        </pre>
+        <p>
+          The author creates its own section markers during first adoption. Keep
+          handwritten paragraphs outside the generated blocks. After adoption,{' '}
+          <code>sync</code> requires valid markers and stops on malformed ones.
+          Preview the first adoption carefully; it introduces generated
+          structure into an existing README.
+        </p>
+      </section>
+      <section className="document-section">
         <h2>Workflow permissions</h2>
         <p>
           The workflow needs <code>contents: write</code> to commit generated
@@ -127,6 +250,63 @@ export default function DocsPage() {
           <code>main</code>; change that for other default branches. Releases
           remain an explicit publishing step.
         </p>
+      </section>
+      <section className="document-section">
+        <h2>Troubleshooting</h2>
+        <details>
+          <summary>The pre-push check blocks my push</summary>
+          <p>
+            Run <code>pomade sync --approved</code>, review{' '}
+            <code>git diff</code>, commit the README and covers, then push
+            again. Use <code>pomade hooks uninstall --approved</code> to remove
+            the optional gate.
+          </p>
+        </details>
+        <details>
+          <summary>
+            I already use Husky, Lefthook, or another hook manager
+          </summary>
+          <p>
+            Keep it. Add <code>pomade hooks check</code> to your existing
+            pre-push pipeline. PoMade refuses to overwrite an owner hook or
+            alter core.hooksPath.
+          </p>
+        </details>
+        <details>
+          <summary>About and topics are not updating</summary>
+          <p>
+            Check the presentation Action logs. Save POMADE_TOKEN as a
+            repository Actions secret with Administration write access to the
+            correct repository. A missing token produces a skip notice; expired
+            or insufficient tokens produce an error.
+          </p>
+        </details>
+        <details>
+          <summary>My image is missing</summary>
+          <p>
+            Use a repository-relative path to an existing file, commit the file,
+            and check letter casing. For the CLI, media must remain inside the
+            repository boundary. The Studio ZIP includes only assets you
+            supplied or selected from its sample.
+          </p>
+        </details>
+        <details>
+          <summary>The plugin does not appear in Codex</summary>
+          <p>
+            Run the marketplace and plugin installation commands on the Install
+            page, then open a new chat or restart the app. Select PoMade from
+            your local marketplace. The universal public directory is a separate
+            distribution channel.
+          </p>
+        </details>
+        <details>
+          <summary>The Action cannot push to a protected branch</summary>
+          <p>
+            Keep branch protection. Adapt the workflow to create a pull request
+            or use your repository’s approved bot path. The sample uses a normal
+            push and will not force through protection.
+          </p>
+        </details>
       </section>
     </div>
   );

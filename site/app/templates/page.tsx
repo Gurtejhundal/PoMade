@@ -1,4 +1,10 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'README templates — PoMade',
+  description:
+    'Compare Simple, Signature, and Motion. Preview real content and customize your README in Studio.',
+};
 import { ArrowRight } from 'lucide-react';
 import { PRESENTATION_STYLES } from '../../../src/core/content/templates';
 import { POMADE_SAMPLE } from '../../lib/templates/samples';
@@ -15,6 +21,49 @@ export default function TemplatesPage() {
       <p className="page-lead">
         Three ways to introduce the same project. Start with the quiet one,
         build an identity, or let the product move.
+      </p>
+      <div className="markdown-table-wrap">
+        <table className="template-comparison">
+          <thead>
+            <tr>
+              <th>Style</th>
+              <th>Best fit</th>
+              <th>What it adds</th>
+              <th>Preset</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Simple</td>
+              <td>Libraries, CLI tools, early projects</td>
+              <td>Direct title, description, setup, features</td>
+              <td>
+                <code>minimal</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Signature</td>
+              <td>Projects with a visual identity</td>
+              <td>Centered logo, tagline, badges, screenshot</td>
+              <td>
+                <code>signature</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Motion</td>
+              <td>Products that benefit from a demo</td>
+              <td>Animated SVG, real GIF, static alternatives</td>
+              <td>
+                <code>animated</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p className="markdown-note">
+        Every style uses your project facts. Animated covers are generated;
+        product screenshots and recordings are supplied by you. Studio exports
+        Markdown, config, and referenced sample assets.
       </p>
       <div className="template-collection">
         {PRESENTATION_STYLES.map((t) => (

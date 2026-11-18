@@ -47,3 +47,11 @@ The workflow example targets `main`. Adapt it to the actual default branch and b
 - Stop on malformed markers, unreadable targets, or stale hashes; do not replace the document as a fallback.
 - Author-supplied claims remain author-supplied. A configured test script is not a passing test result. An audit score is not proof of production readiness.
 - Do not choose a license, invent a security email, or claim unsupported platforms. Keep existing license and community files intact unless asked to change them.
+
+## Hooks and installation
+
+The plugin bundles advisory SessionStart and PreToolUse hooks for Codex and Claude Code. Codex requires review/trust of the current hook definition. Hooks add context; they do not grant permission or install Git hooks.
+
+For optional deterministic checks in a configured repository, use `pomade hooks install --approved`, `pomade hooks status`, and `pomade hooks check`. Installation is local to each clone. Existing pre-push hooks and custom core.hooksPath are preserved; suggest adding `pomade hooks check` to the owner's existing hook manager. To remove only PoMade's own hook, use `pomade hooks uninstall --approved`.
+
+If a push check fails, inspect the output, run an authorized `pomade sync --approved`, review and commit presentation changes with the requested work, then retry the normal push. Do not bypass the hook or create hidden commits to make a check pass.

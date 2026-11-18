@@ -18,41 +18,31 @@ export function Header() {
     } catch {}
   }
   return (
-    <header
-      className={`document-header ${pathname === '/' ? 'home-document-header' : ''}`}
-    >
+    <header className="document-header">
       <a className="skip-link" href="#content">
         Skip to content
       </a>
-      {pathname !== '/' && (
-        <nav aria-label="Main navigation">
-          <Link href="/">← PoMade</Link>
+      <Link className="site-wordmark" href="/" aria-label="PoMade home">
+        PoMade<span>v1.0.0</span>
+      </Link>
+      <nav aria-label="Main navigation">
+        {[
+          ['/features', 'Functions'],
+          ['/templates', 'Templates'],
+          ['/studio', 'Studio'],
+          ['/install', 'Install & hooks'],
+          ['/docs', 'Docs'],
+          ['/changelog', 'Changelog'],
+        ].map(([href, label]) => (
           <Link
-            href="/templates"
-            aria-current={pathname === '/templates' ? 'page' : undefined}
+            key={href}
+            href={href}
+            aria-current={pathname === href ? 'page' : undefined}
           >
-            Templates
+            {label}
           </Link>
-          <Link
-            href="/studio"
-            aria-current={pathname === '/studio' ? 'page' : undefined}
-          >
-            Studio
-          </Link>
-          <Link
-            href="/how-it-works"
-            aria-current={pathname === '/how-it-works' ? 'page' : undefined}
-          >
-            Workflow
-          </Link>
-          <Link
-            href="/docs"
-            aria-current={pathname === '/docs' ? 'page' : undefined}
-          >
-            Docs
-          </Link>
-        </nav>
-      )}
+        ))}
+      </nav>
       <button
         className="theme-button"
         aria-label={dark ? 'Use light theme' : 'Use dark theme'}

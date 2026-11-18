@@ -5,7 +5,7 @@
 
 <p align="center"><em>Code pushed. First impression handled.</em></p>
 
-![Manifest version](https://img.shields.io/badge/version-1.0.0--rc.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
+![Manifest version](https://img.shields.io/badge/version-1.0.0-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
 
 [Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/Pomade)
 
@@ -46,7 +46,7 @@ npm link
 - **Three README styles** — Simple for a clear first run, Signature for a distinct identity, and Motion for an animated cover and real demo media.
 - **Polish after a push** — A GitHub Action maintains marked README sections and cover assets on pushes to main. Text outside managed sections stays yours.
 - **The whole front door** — Configure a concise About, homepage, and curated topics. Sync metadata with an administration-scoped token while preserving existing topics.
-- **A coding-agent companion** — The bundled skill includes presentation in requested commit and push workflows. A Claude Code plugin manifest is included.
+- **A coding-agent companion** — A Codex and Claude Code plugin with bundled agent context hooks. Optional local Git pre-push checks preserve existing hooks.
 - **Preview before writing** — Review a saved plan with target hashes, then apply that exact plan. Stale targets, escaping paths, and malformed markers are rejected.
 <!-- pomade:end features -->
 
@@ -129,7 +129,7 @@ The skill includes presentation when preparing a requested push. The GitHub Acti
 
 ## Development and status
 
-Source release candidate: `1.0.0-rc.1`. The website and CLI are separate build targets. Development/tests and the Action use Node.js 22 or newer; the website requires Node.js 20.9 or newer. CLI runtime metadata still permits Node.js 18 or newer. Source installation is documented above; npm publication and release creation are separate operations.
+Stable release: `1.0.0`. Install the packaged CLI from [GitHub Releases](https://github.com/Gurtejhundal/Pomade/releases/tag/v1.0.0). CLI, development, and hooks require Node.js 22 or newer. The website is a separate build target. npm registry publication is separate.
 
 ```bash
 npm test
@@ -141,3 +141,24 @@ npm run site:build
 The terminal GIF is typeset playback of actual captured CLI stdout, not a screen recording. Owner-authored claims need review. Scanning a script does not establish that it passes.
 
 [Audit and verification report](docs/audit/2026-11-18.md).
+
+## Install the plugin
+
+Codex:
+
+```sh
+codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0
+codex plugin add pomade@pomade
+```
+
+Restart or open a new chat, select PoMade, and review/trust its bundled hooks. The plugin is distributed through this repository marketplace, separately from the universal public directory.
+
+Claude Code:
+
+```text
+/plugin install pomade --marketplace Gurtejhundal/Pomade
+```
+
+The CLI must be installed separately. Session and pre-tool hooks add presentation context. For an optional local push gate, run `pomade hooks install --approved` after configuring the repository. Run `pomade hooks uninstall --approved` to remove only PoMade's own hook. Existing hooks and custom hook managers are preserved.
+
+[Full installation and hooks guide](https://pomade-swart.vercel.app/install) · [Functions](https://pomade-swart.vercel.app/features) · [Command reference](https://pomade-swart.vercel.app/docs)
