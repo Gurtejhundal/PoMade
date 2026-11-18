@@ -11,6 +11,8 @@ Code pushed. First impression handled.
 
 Treat the README, real product media, About, and topics as part of shipping. Activate for a requested push or release as well as an explicit documentation task. Keep a small code fix small: update presentation when public behavior, setup, commands, or screenshots changed.
 
+When the user explicitly invokes PoMade for a requested push, include the initial presentation setup if this repository has never been configured. Do not reduce that request to a code-only push or an optional suggestion. Preserve an already polished, hand-written README and use metadata-only maintenance when appropriate. Missing credentials block the remote step, not the independent preparation; name the blocker before reporting completion.
+
 ## Workflow
 
 1. Inspect `git diff`, the manifests, and existing README. Run `pomade scan` and `pomade audit` inside the target repository.
