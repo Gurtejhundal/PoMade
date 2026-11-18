@@ -20,7 +20,7 @@ export default function ChangelogPage() {
           v1.0.0 <span className="release-label">Stable</span>
         </h2>
         <p>
-          18 November 2026 · <a href={RELEASE}>Release notes & downloads →</a>
+          18 November 2026 · <a href={`${REPOSITORY}/releases/tag/v1.0.0`}>Release notes & downloads →</a>
         </p>
         <ul>
           <li>
