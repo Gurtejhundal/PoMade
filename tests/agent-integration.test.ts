@@ -25,7 +25,7 @@ describe('Agent Integration & Lifecycle Simulation', () => {
     const content = await fs.readFile(skillFile, 'utf-8');
 
     // Check YAML frontmatter
-    expect(content).toMatch(/^---\n[\s\S]*?\n---/);
+    expect(content).toMatch(/^---\r?\n[\s\S]*?\r?\n---/);
     expect(content).toContain('name: pomade');
     expect(content).toContain('description:');
     expect(content).toContain('compatibility:');

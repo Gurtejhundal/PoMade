@@ -16,7 +16,7 @@ it('emits Git-applicable patches for missing final newlines and large READMEs', 
     ]) {
       const file = path.join(root, 'README.md');
       fs.writeFileSync(file, before);
-      execFileSync('git', ['apply', '--unsafe-paths', '-'], {
+      execFileSync('git', ['-c', 'core.autocrlf=false', 'apply', '--unsafe-paths', '-'], {
         cwd: root,
         input: UnifiedDiff.create('README.md', before, after),
       });
