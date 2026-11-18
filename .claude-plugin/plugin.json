@@ -1,0 +1,11 @@
+{
+  "name": "pomade",
+  "version": "1.0.0-rc.1",
+  "description": "Code pushed. First impression handled. Maintain README, real media, About, and topics with a coding-agent skill and GitHub Action.",
+  "author": {
+    "name": "Gurtej Hundal",
+    "url": "https://github.com/Gurtejhundal"
+  },
+  "repository": "https://github.com/Gurtejhundal/PoMade",
+  "license": "MIT"
+}

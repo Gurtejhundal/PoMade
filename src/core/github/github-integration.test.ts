@@ -6,7 +6,9 @@ import { ReleasePlanner } from './release-planner.js';
 import { GitHubAdapter } from '../../adapters/github/github-adapter.js';
 import type { RepositorySnapshot } from '../types/schemas.js';
 
-function createMockSnapshot(overrides: Partial<RepositorySnapshot> = {}): RepositorySnapshot {
+function createMockSnapshot(
+  overrides: Partial<RepositorySnapshot> = {}
+): RepositorySnapshot {
   return {
     schemaVersion: '0.1.0',
     repoRoot: '/mock/repo',
@@ -52,14 +54,18 @@ describe('GitHubMetadataPlanner', () => {
     const snapshot = createMockSnapshot();
     const plan = GitHubMetadataPlanner.plan(snapshot);
 
-    expect(plan.proposedDescription).toBe('A lightning-fast CLI utility for developers');
+    expect(plan.proposedDescription).toBe(
+      'A lightning-fast CLI utility for developers'
+    );
     expect(plan.proposedTopics).toContain('typescript');
     expect(plan.proposedTopics).toContain('cli');
     expect(plan.proposedTopics).toContain('developer-tools');
     expect(plan.proposedTopics).toContain('commander');
     expect(plan.proposedTopics).toContain('vitest');
     expect(plan.commandPreview).toContain('gh repo edit my-org/my-cli-tool');
-    expect(plan.commandPreview).toContain('--description "A lightning-fast CLI utility for developers"');
+    expect(plan.commandPreview).toContain(
+      '--description "A lightning-fast CLI utility for developers"'
+    );
   });
 
   it('truncates long descriptions gracefully to under 100 characters', () => {
@@ -98,8 +104,14 @@ describe('LicenseAssistant', () => {
     expect(mitNotice).toContain('MIT License');
     expect(mitNotice).toContain('Copyright (c) 2026 Acme Corp');
 
-    const apacheNotice = LicenseAssistant.generateNotice('Apache-2.0', 'Acme Corp', 2026);
-    expect(apacheNotice).toContain('Licensed under the Apache License, Version 2.0');
+    const apacheNotice = LicenseAssistant.generateNotice(
+      'Apache-2.0',
+      'Acme Corp',
+      2026
+    );
+    expect(apacheNotice).toContain(
+      'Licensed under the Apache License, Version 2.0'
+    );
     expect(apacheNotice).toContain('Copyright 2026 Acme Corp');
   });
 });
@@ -121,7 +133,10 @@ describe('CommunityTemplates', () => {
     const contributing = CommunityTemplates.contributing('MySuperProject');
     expect(contributing).toContain('# Contributing to MySuperProject');
 
-    const security = CommunityTemplates.security('MySuperProject', 'sec@example.com');
+    const security = CommunityTemplates.security(
+      'MySuperProject',
+      'sec@example.com'
+    );
     expect(security).toContain('sec@example.com');
   });
 });
@@ -141,8 +156,8 @@ describe('ReleasePlanner', () => {
     expect(plan.proposedVersion).toBe('2.0.0');
     expect(plan.changelogEntry).toContain('### Added');
     expect(plan.changelogEntry).toContain('### Fixed');
-    expect(plan.verifiedTests).toBe(true);
-    expect(plan.warnings).toHaveLength(0);
+    expect(plan.verifiedTests).toBe(false);
+    expect(plan.warnings).toHaveLength(1);
   });
 
   it('bumps minor version when features are detected without breaking changes', () => {
@@ -187,9 +202,9 @@ describe('GitHubAdapter', () => {
     const snapshot = createMockSnapshot();
     const plan = GitHubMetadataPlanner.plan(snapshot);
 
-    await expect(adapter.updateMetadata(plan, { approvedRemote: false })).rejects.toThrow(
-      /Remote authorization required/
-    );
+    await expect(
+      adapter.updateMetadata(plan, { approvedRemote: false })
+    ).rejects.toThrow(/Remote authorization required/);
   });
 
   it('supports dry-run mode without invoking remote gh CLI', async () => {
@@ -197,7 +212,10 @@ describe('GitHubAdapter', () => {
     const snapshot = createMockSnapshot();
     const plan = GitHubMetadataPlanner.plan(snapshot);
 
-    const result = await adapter.updateMetadata(plan, { approvedRemote: true, dryRun: true });
+    const result = await adapter.updateMetadata(plan, {
+      approvedRemote: true,
+      dryRun: true,
+    });
     expect(result.success).toBe(true);
     expect(result.dryRun).toBe(true);
     expect(result.executedCommand).toContain('gh repo edit');

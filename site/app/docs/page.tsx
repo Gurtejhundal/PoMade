@@ -1,130 +1,133 @@
-import React from 'react';
-import Link from 'next/link';
-import { Terminal, BookOpen, CheckCircle, ExternalLink, Copy } from 'lucide-react';
-
+import { Terminal } from 'lucide-react';
+const commands = [
+  [
+    'pomade init --preset signature --approved',
+    'Create .pomade.json and a push workflow. Existing configuration is never overwritten. Omit --approved to preview the files.',
+  ],
+  [
+    'pomade scan --json',
+    'Inspect manifests, scripts, frameworks, Git state, licenses, documentation, and media. Read-only.',
+  ],
+  [
+    'pomade audit --min-score 70',
+    'Check repository presentation signals. Scores describe the checks, not production readiness.',
+  ],
+  [
+    'pomade diff --preset animated',
+    'Preview the README and local animated/static covers. Presets: minimal (Simple), signature, animated (Motion).',
+  ],
+  [
+    'pomade plan --output plan.json',
+    'Save a concrete plan for review. The plan includes proposed content and target hashes.',
+  ],
+  [
+    'pomade apply --plan plan.json --approved',
+    'Apply that exact saved plan. Abort if target contents have changed. Without --plan, generate and apply a fresh plan.',
+  ],
+  [
+    'pomade sync --approved --dry-run',
+    'Preview automated maintenance. Requires managed README markers; refuses an unmarked existing README.',
+  ],
+  [
+    'pomade sync --approved --approved-remote',
+    'Refresh managed README/assets and sync About/topics. Supply GH_TOKEN or GITHUB_TOKEN with Administration write permission; local gh authentication is the fallback.',
+  ],
+  [
+    'pomade media plan',
+    'Prepare capture guidance for real screenshots and recordings. Does not execute the app or create a fake capture.',
+  ],
+  [
+    'pomade github plan',
+    'Suggest description and topics from manifests. .pomade.json provides curated metadata for sync.',
+  ],
+  [
+    'pomade drift --fail-on-drift',
+    'Flag differences between observed manifest configuration and documentation mentions.',
+  ],
+  [
+    'pomade release plan',
+    'Draft version and changelog suggestions from commits. Does not publish or claim tests have passed.',
+  ],
+];
 export default function DocsPage() {
-  const commands = [
-    {
-      cmd: 'pomade scan [path]',
-      desc: 'Scan repository structure, manifests, and git state without modifying files.',
-      example: 'pomade scan --json',
-    },
-    {
-      cmd: 'pomade audit [path]',
-      desc: 'Audit presentation clarity, first-run experience, trust, and maintenance score (0-100).',
-      example: 'pomade audit --min-score 80',
-    },
-    {
-      cmd: 'pomade plan [path]',
-      desc: 'Generate an evidence-backed presentation plan and proposed diffs.',
-      example: 'pomade plan --preset studio',
-    },
-    {
-      cmd: 'pomade diff [path]',
-      desc: 'Display standard unified diffs for all proposed file changes.',
-      example: 'pomade diff --preset maintainer',
-    },
-    {
-      cmd: 'pomade apply [path]',
-      desc: 'Apply approved plan atomically to local repository files.',
-      example: 'pomade apply --approved --preset studio',
-    },
-    {
-      cmd: 'pomade drift [path]',
-      desc: 'Detect drift between codebase interfaces (scripts, dependencies) and README docs.',
-      example: 'pomade drift --fail-on-drift',
-    },
-    {
-      cmd: 'pomade media plan [path]',
-      desc: 'Detect runnable UI and generate a media capture plan (skipping fake screenshots).',
-      example: 'pomade media plan --json',
-    },
-    {
-      cmd: 'pomade media generate-diagram',
-      desc: 'Generate a responsive, dark-mode compatible SVG architecture diagram.',
-      example: 'pomade media generate-diagram --output docs/media/architecture.svg',
-    },
-    {
-      cmd: 'pomade media generate-card',
-      desc: 'Generate a compliant 1280x640 GitHub social preview card asset.',
-      example: 'pomade media generate-card --output docs/media/social-preview.svg',
-    },
-    {
-      cmd: 'pomade github plan [path]',
-      desc: 'Generate evidence-backed repository description and topic recommendations.',
-      example: 'pomade github plan --json',
-    },
-    {
-      cmd: 'pomade github apply [path]',
-      desc: 'Apply metadata changes to remote GitHub via gh CLI (requires --approved-remote).',
-      example: 'pomade github apply --approved-remote',
-    },
-    {
-      cmd: 'pomade github init-community',
-      desc: 'Initialize bug report, feature request, PR templates, and CONTRIBUTING.md.',
-      example: 'pomade github init-community --approved --license MIT --author "Acme"',
-    },
-    {
-      cmd: 'pomade release plan [path]',
-      desc: 'Inspect git commit history and prepare a semver release plan and changelog draft.',
-      example: 'pomade release plan --json',
-    },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12 font-sans">
-      <div className="space-y-3">
-        <span className="text-xs font-mono uppercase tracking-wider text-copper-600 dark:text-amberGold-400 font-semibold">
-          Reference Manual
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-          CLI & Agent Commands
-        </h1>
-        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-          Comprehensive reference for the Pomade CLI and autonomous AI agent skill execution.
-        </p>
-      </div>
-
-      {/* Global Installation */}
-      <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-3 font-mono text-xs">
-        <div className="font-bold text-sm text-text-primary-light dark:text-text-primary-dark">
-          Installation
+    <div className="inner-page narrow-page" id="content">
+      <div className="page-eyebrow">DOCUMENTATION / GET STARTED</div>
+      <h1>
+        Small commands.
+        <br />
+        <em>A considered repository.</em>
+      </h1>
+      <p className="page-lead">
+        Node.js 18 or newer for the CLI. The bundled GitHub Action uses Node.js
+        22.
+      </p>
+      <section className="document-section">
+        <h2>Install from source</h2>
+        <div className="code-window">
+          <div>
+            <Terminal size={14} />
+            terminal
+          </div>
+          <pre>
+            <code>
+              {
+                'git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link'
+              }
+            </code>
+          </pre>
         </div>
-        <pre className="p-3 bg-subtle-light dark:bg-subtle-dark rounded border border-border-subtle-light dark:border-border-subtle-dark text-text-primary-light dark:text-text-primary-dark">
-          npm install -g pomade
-        </pre>
-        <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
-          Requires Node.js LTS (&gt;= 18.0.0). Verified on Linux, macOS, and Windows.
+        <p>
+          Run PoMade inside your target repository. For a coding agent, install
+          the included{' '}
+          <a href="https://github.com/Gurtejhundal/PoMade/tree/main/skills/pomade">
+            skill directory
+          </a>{' '}
+          in the agent’s skills location.
         </p>
-      </div>
-
-      {/* Commands List */}
-      <div className="space-y-6">
-        <h2 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight font-mono">
-          Command Specifications
-        </h2>
-
-        <div className="space-y-4">
-          {commands.map((c) => (
-            <div
-              key={c.cmd}
-              className="p-5 rounded-lg border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-2 font-mono text-xs shadow-editorial"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-copper-600 dark:text-amberGold-400 text-sm">
-                  $ {c.cmd}
-                </span>
-              </div>
-              <p className="text-text-secondary-light dark:text-text-secondary-dark font-sans text-xs">
-                {c.desc}
-              </p>
-              <div className="p-2 bg-subtle-light dark:bg-subtle-dark rounded text-[11px] text-text-muted-light dark:text-text-muted-dark">
-                Example: <span className="text-text-primary-light dark:text-text-primary-dark font-semibold">{c.example}</span>
-              </div>
+      </section>
+      <section className="document-section">
+        <h2>Choose what gets maintained</h2>
+        <pre className="config-example">
+          <code>
+            {
+              '{\n  "preset": "animated",\n  "tagline": "The shortest path from idea to working thing.",\n  "description": "A concrete, accurate description of your project.",\n  "topics": ["developer-tools", "documentation"],\n  "screenshot": "docs/media/hero.png",\n  "demo": "docs/media/demo.gif"\n}'
+            }
+          </code>
+        </pre>
+        <p>
+          Media paths must point to existing files inside your repository. The
+          owner supplies product claims; the scanner supplies project facts.
+          Neither Studio nor the scanner can certify that a product claim is
+          true.
+        </p>
+      </section>
+      <section className="document-section">
+        <h2>Command reference</h2>
+        <div className="command-reference">
+          {commands.map(([cmd, desc]) => (
+            <div key={cmd}>
+              <code>{cmd}</code>
+              <p>{desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
+      <section className="document-section">
+        <h2>Workflow permissions</h2>
+        <p>
+          The workflow needs <code>contents: write</code> to commit generated
+          files. For About/topics, create a fine-grained token limited to this
+          repository with <strong>Administration: write</strong>, and save it as{' '}
+          <code>POMADE_TOKEN</code> in Actions secrets. Without it, README
+          maintenance runs and metadata sync is skipped with a notice.
+        </p>
+        <p>
+          Pin the external action to a reviewed commit SHA. The sample targets{' '}
+          <code>main</code>; change that for other default branches. Releases
+          remain an explicit publishing step.
+        </p>
+      </section>
     </div>
   );
 }

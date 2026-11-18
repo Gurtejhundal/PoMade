@@ -1,6 +1,10 @@
+import { z } from 'zod';
 import * as path from 'node:path';
 import * as crypto from 'node:crypto';
-import { SafeFileSystem, type DiscoveredFile } from '../../adapters/filesystem/safe-fs.js';
+import {
+  SafeFileSystem,
+  type DiscoveredFile,
+} from '../../adapters/filesystem/safe-fs.js';
 import { GitCli } from '../../adapters/git/git-cli.js';
 import type {
   RepositorySnapshot,
@@ -26,7 +30,9 @@ export class RepositoryScanner {
 
   public async scan(): Promise<RepositorySnapshot> {
     if (!(await this.fs.rootExists())) {
-      throw new Error(`Repository root directory does not exist or is not a directory: '${this.repoRoot}'`);
+      throw new Error(
+        `Repository root directory does not exist or is not a directory: '${this.repoRoot}'`
+      );
     }
 
     const warnings: string[] = [];
@@ -81,17 +87,30 @@ export class RepositoryScanner {
       }
     }
 
+    // Root manifests take precedence over examples and nested packages.
+    manifests.sort(
+      (a, b) =>
+        a.path.split('/').length - b.path.split('/').length ||
+        a.path.localeCompare(b.path)
+    );
+
     // Determine primary language:
     // Prioritize actual programming languages over documentation/markup formats
     const nonMarkupLanguages = Object.entries(languages).filter(
       ([lang]) => lang !== 'Markdown' && lang !== 'HTML' && lang !== 'CSS'
     );
 
-    let primaryLanguage = nonMarkupLanguages.sort((a, b) => b[1] - a[1])[0]?.[0];
+    let primaryLanguage = nonMarkupLanguages.sort(
+      (a, b) => b[1] - a[1]
+    )[0]?.[0];
     if (!primaryLanguage) {
       if (manifests.some((m) => m.manifestType === 'npm')) {
         primaryLanguage = languages['TypeScript'] ? 'TypeScript' : 'JavaScript';
-      } else if (manifests.some((m) => m.manifestType === 'pyproject' || m.manifestType === 'pip')) {
+      } else if (
+        manifests.some(
+          (m) => m.manifestType === 'pyproject' || m.manifestType === 'pip'
+        )
+      ) {
         primaryLanguage = 'Python';
       } else if (manifests.some((m) => m.manifestType === 'cargo')) {
         primaryLanguage = 'Rust';
@@ -141,7 +160,10 @@ export class RepositoryScanner {
     // 5. Workflows
     const workflows: WorkflowFact[] = [];
     for (const f of files) {
-      if (f.relativePath.startsWith('.github/workflows/') && (f.extension === '.yml' || f.extension === '.yaml')) {
+      if (
+        f.relativePath.startsWith('.github/workflows/') &&
+        (f.extension === '.yml' || f.extension === '.yaml')
+      ) {
         workflows.push({
           path: f.relativePath,
           name: path.basename(f.relativePath, f.extension),
@@ -154,7 +176,13 @@ export class RepositoryScanner {
 
     // 7. Project Kind & Maturity Stage
     const kind = this.classifyProjectKind(files, manifests, frameworks);
-    const stage = this.classifyMaturityStage(files, gitState, manifests, docs, workflows);
+    const stage = this.classifyMaturityStage(
+      files,
+      gitState,
+      manifests,
+      docs,
+      workflows
+    );
 
     // 8. Snapshot Fingerprint
     const fingerprint = this.computeFingerprint(
@@ -243,13 +271,21 @@ export class RepositoryScanner {
     if (base.startsWith('CODE_OF_CONDUCT')) return 'code-of-conduct';
     if (base.startsWith('SECURITY')) return 'security';
     if (base.startsWith('SUPPORT')) return 'support';
-    if (base.startsWith('CHANGELOG') || base.startsWith('HISTORY')) return 'changelog';
-    if (base.startsWith('LICENSE') || base.startsWith('LICENCE')) return 'license';
-    if (relPath.startsWith('docs/') && (relPath.endsWith('.md') || relPath.endsWith('.mdx'))) return 'docs';
+    if (base.startsWith('CHANGELOG') || base.startsWith('HISTORY'))
+      return 'changelog';
+    if (base.startsWith('LICENSE') || base.startsWith('LICENCE'))
+      return 'license';
+    if (
+      relPath.startsWith('docs/') &&
+      (relPath.endsWith('.md') || relPath.endsWith('.mdx'))
+    )
+      return 'docs';
     return null;
   }
 
-  private detectAssetKind(ext: string): 'image' | 'video' | 'gif' | 'diagram' | null {
+  private detectAssetKind(
+    ext: string
+  ): 'image' | 'video' | 'gif' | 'diagram' | null {
     if (['.png', '.jpg', '.jpeg', '.webp'].includes(ext)) return 'image';
     if (['.gif'].includes(ext)) return 'gif';
     if (['.mp4', '.webm', '.mov'].includes(ext)) return 'video';
@@ -257,10 +293,30 @@ export class RepositoryScanner {
     return null;
   }
 
-  private async parsePackageJson(relPath: string, warnings: string[]): Promise<ManifestFact | null> {
+  private async parsePackageJson(
+    relPath: string,
+    warnings: string[]
+  ): Promise<ManifestFact | null> {
     try {
       const content = await this.fs.readFile(relPath);
-      const parsed = JSON.parse(content);
+      const parsed = z
+        .object({
+          name: z.string().optional(),
+          version: z.string().optional(),
+          description: z.string().optional(),
+          license: z.unknown().optional(),
+          main: z.string().optional(),
+          module: z.string().optional(),
+          bin: z
+            .union([z.string(), z.record(z.string(), z.string())])
+            .optional(),
+          dependencies: z.record(z.string(), z.string()).optional(),
+          devDependencies: z.record(z.string(), z.string()).optional(),
+          scripts: z.record(z.string(), z.string()).optional(),
+          keywords: z.array(z.string()).optional(),
+        })
+        .passthrough()
+        .parse(JSON.parse(content));
 
       const dependencies = Object.keys(parsed.dependencies ?? {});
       const devDependencies = Object.keys(parsed.devDependencies ?? {});
@@ -272,7 +328,9 @@ export class RepositoryScanner {
         if (typeof parsed.bin === 'string') {
           entrypoints.push(parsed.bin);
         } else if (typeof parsed.bin === 'object') {
-          entrypoints.push(...Object.values(parsed.bin as Record<string, string>));
+          entrypoints.push(
+            ...Object.values(parsed.bin as Record<string, string>)
+          );
         }
       }
 
@@ -282,11 +340,15 @@ export class RepositoryScanner {
         name: parsed.name,
         version: parsed.version,
         description: parsed.description,
-        license: typeof parsed.license === 'string' ? parsed.license : undefined,
+        license:
+          typeof parsed.license === 'string' ? parsed.license : undefined,
         scripts: typeof parsed.scripts === 'object' ? parsed.scripts : {},
         dependencies,
         devDependencies,
         entrypoints,
+        keywords: Array.isArray(parsed.keywords)
+          ? parsed.keywords.filter((v: unknown) => typeof v === 'string')
+          : [],
       };
     } catch (err: any) {
       warnings.push(`Failed to parse ${relPath}: ${err.message}`);
@@ -294,7 +356,10 @@ export class RepositoryScanner {
     }
   }
 
-  private async parsePyproject(relPath: string, warnings: string[]): Promise<ManifestFact | null> {
+  private async parsePyproject(
+    relPath: string,
+    warnings: string[]
+  ): Promise<ManifestFact | null> {
     try {
       const content = await this.fs.readFile(relPath);
       // Light-weight TOML key-value extraction for essential metadata without heavy deps
@@ -327,7 +392,10 @@ export class RepositoryScanner {
     }
   }
 
-  private async parseRequirements(relPath: string, warnings: string[]): Promise<ManifestFact | null> {
+  private async parseRequirements(
+    relPath: string,
+    warnings: string[]
+  ): Promise<ManifestFact | null> {
     try {
       const content = await this.fs.readFile(relPath);
       const dependencies = content
@@ -348,7 +416,10 @@ export class RepositoryScanner {
     }
   }
 
-  private async parseCargoToml(relPath: string, warnings: string[]): Promise<ManifestFact | null> {
+  private async parseCargoToml(
+    relPath: string,
+    warnings: string[]
+  ): Promise<ManifestFact | null> {
     try {
       const content = await this.fs.readFile(relPath);
       const nameMatch = content.match(/name\s*=\s*["']([^"']+)["']/);
@@ -370,7 +441,10 @@ export class RepositoryScanner {
     }
   }
 
-  private async parseGoMod(relPath: string, warnings: string[]): Promise<ManifestFact | null> {
+  private async parseGoMod(
+    relPath: string,
+    warnings: string[]
+  ): Promise<ManifestFact | null> {
     try {
       const content = await this.fs.readFile(relPath);
       const moduleMatch = content.match(/^module\s+([^\s]+)/m);
@@ -386,7 +460,10 @@ export class RepositoryScanner {
   }
 
   private detectNodeFrameworks(fact: ManifestFact, set: Set<string>): void {
-    const allDeps = [...(fact.dependencies ?? []), ...(fact.devDependencies ?? [])];
+    const allDeps = [
+      ...(fact.dependencies ?? []),
+      ...(fact.devDependencies ?? []),
+    ];
     const depMap: Record<string, string> = {
       next: 'Next.js',
       react: 'React',
@@ -458,12 +535,20 @@ export class RepositoryScanner {
   ): Promise<LicenseFact | null> {
     const licenseFile = files.find((f) => {
       const base = path.basename(f.relativePath).toUpperCase();
-      return base === 'LICENSE' || base === 'LICENCE' || base.startsWith('LICENSE.') || base.startsWith('LICENCE.');
+      return (
+        base === 'LICENSE' ||
+        base === 'LICENCE' ||
+        base.startsWith('LICENSE.') ||
+        base.startsWith('LICENCE.')
+      );
     });
 
     if (licenseFile) {
       try {
-        const content = await this.fs.readFile(licenseFile.relativePath, 8 * 1024);
+        const content = await this.fs.readFile(
+          licenseFile.relativePath,
+          8 * 1024
+        );
         const spdxId = this.identifySpdx(content);
         return {
           path: licenseFile.relativePath,
@@ -496,19 +581,38 @@ export class RepositoryScanner {
 
   private identifySpdx(content: string): string | undefined {
     const upper = content.toUpperCase();
-    if (upper.includes('MIT LICENSE') || upper.includes('PERMISSION IS HEREBY GRANTED, FREE OF CHARGE')) return 'MIT';
-    if (upper.includes('APACHE LICENSE') && upper.includes('VERSION 2.0')) return 'Apache-2.0';
-    if (upper.includes('GNU GENERAL PUBLIC LICENSE') && upper.includes('VERSION 3')) return 'GPL-3.0';
+    if (
+      upper.includes('MIT LICENSE') ||
+      upper.includes('PERMISSION IS HEREBY GRANTED, FREE OF CHARGE')
+    )
+      return 'MIT';
+    if (upper.includes('APACHE LICENSE') && upper.includes('VERSION 2.0'))
+      return 'Apache-2.0';
+    if (
+      upper.includes('GNU GENERAL PUBLIC LICENSE') &&
+      upper.includes('VERSION 3')
+    )
+      return 'GPL-3.0';
     if (upper.includes('BSD 3-CLAUSE')) return 'BSD-3-Clause';
     if (upper.includes('BSD 2-CLAUSE')) return 'BSD-2-Clause';
     if (upper.includes('ISC LICENSE')) return 'ISC';
-    if (upper.includes('MOZILLA PUBLIC LICENSE') && upper.includes('2.0')) return 'MPL-2.0';
+    if (upper.includes('MOZILLA PUBLIC LICENSE') && upper.includes('2.0'))
+      return 'MPL-2.0';
     if (upper.includes('THE UNLICENSE')) return 'Unlicense';
     return undefined;
   }
 
   private isStandardSpdx(id: string): boolean {
-    const standard = ['MIT', 'Apache-2.0', 'GPL-3.0', 'BSD-3-Clause', 'BSD-2-Clause', 'ISC', 'MPL-2.0', 'Unlicense'];
+    const standard = [
+      'MIT',
+      'Apache-2.0',
+      'GPL-3.0',
+      'BSD-3-Clause',
+      'BSD-2-Clause',
+      'ISC',
+      'MPL-2.0',
+      'Unlicense',
+    ];
     return standard.includes(id);
   }
 
@@ -521,7 +625,8 @@ export class RepositoryScanner {
     const hasWorkspaces = manifests.some((m) => {
       return (
         files.some((f) => f.relativePath === 'pnpm-workspace.yaml') ||
-        (m.manifestType === 'npm' && files.some((f) => f.relativePath.startsWith('packages/')))
+        (m.manifestType === 'npm' &&
+          files.some((f) => f.relativePath.startsWith('packages/')))
       );
     });
     if (hasWorkspaces) return 'monorepo';
@@ -543,12 +648,21 @@ export class RepositoryScanner {
       frameworks.has('Svelte') ||
       frameworks.has('SvelteKit') ||
       frameworks.has('Vite') ||
-      files.some((f) => f.relativePath === 'index.html' || f.relativePath === 'public/index.html');
+      files.some(
+        (f) =>
+          f.relativePath === 'index.html' ||
+          f.relativePath === 'public/index.html'
+      );
 
     // 4. CLI
     const isCli =
-      manifests.some((m) => m.entrypoints?.some((e) => e.includes('cli') || e.includes('bin'))) ||
-      files.some((f) => f.relativePath.includes('bin/') || f.relativePath.includes('cli.'));
+      manifests.some((m) =>
+        m.entrypoints?.some((e) => e.includes('cli') || e.includes('bin'))
+      ) ||
+      files.some(
+        (f) =>
+          f.relativePath.includes('bin/') || f.relativePath.includes('cli.')
+      );
 
     if (isCli && !isWeb) return 'cli';
     if (isWeb) return 'web';
@@ -577,7 +691,11 @@ export class RepositoryScanner {
 
   private classifyMaturityStage(
     files: DiscoveredFile[],
-    gitState: { clean: boolean; commitSha: string | null; trackedFilesCount: number },
+    gitState: {
+      clean: boolean;
+      commitSha: string | null;
+      trackedFilesCount: number;
+    },
     manifests: ManifestFact[],
     docs: DocumentationFact[],
     workflows: WorkflowFact[]
@@ -595,13 +713,22 @@ export class RepositoryScanner {
     const version = primaryManifest?.version;
 
     // Released: version is >= 1.0.0 or semantic release indicator
-    const isReleasedVersion = version && !version.startsWith('0.') && !version.includes('alpha') && !version.includes('beta');
+    const isReleasedVersion =
+      version &&
+      !version.startsWith('0.') &&
+      !version.includes('alpha') &&
+      !version.includes('beta');
 
     if (hasCi && hasContributing && hasLicense && isReleasedVersion) {
       return 'maintained';
     }
 
-    if (isReleasedVersion || (hasReadme && manifests.some((m) => Object.keys(m.scripts ?? {}).length > 0) && hasLicense)) {
+    if (
+      isReleasedVersion ||
+      (hasReadme &&
+        manifests.some((m) => Object.keys(m.scripts ?? {}).length > 0) &&
+        hasLicense)
+    ) {
       return 'usable';
     }
 
@@ -624,7 +751,7 @@ export class RepositoryScanner {
       hash.update(`${f.relativePath}:${f.sizeBytes};`);
     }
     for (const m of manifests) {
-      hash.update(`manifest:${m.path}:${m.name}:${m.version};`);
+      hash.update(JSON.stringify(m));
     }
     for (const d of docs) {
       hash.update(`doc:${d.path}:${d.kind};`);

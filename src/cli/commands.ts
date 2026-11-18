@@ -15,6 +15,10 @@ import { ReleasePlanner } from '../core/github/release-planner.js';
 import { GitCli } from '../adapters/git/git-cli.js';
 import { SafeFileSystem } from '../adapters/filesystem/safe-fs.js';
 import { UnifiedDiff } from '../core/diff/unified-diff.js';
+import { PlanSchema } from '../core/types/schemas.js';
+import { PUSH_WORKFLOW } from '../core/sync/workflow.js';
+import { syncPresentation } from '../core/sync/sync.js';
+import { PresentationConfigSchema } from '../core/content/config.js';
 import type { Preset, Plan, Action } from '../core/types/schemas.js';
 import {
   formatScanText,
@@ -28,7 +32,10 @@ import {
   formatReleasePlanText,
 } from './formatter.js';
 
-export async function runScan(targetPath?: string, options?: { json?: boolean }): Promise<number> {
+export async function runScan(
+  targetPath?: string,
+  options?: { json?: boolean }
+): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
     const scanner = new RepositoryScanner(resolvedPath);
@@ -43,7 +50,10 @@ export async function runScan(targetPath?: string, options?: { json?: boolean })
     return 0;
   } catch (err: any) {
     console.error(`Error during scan: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -68,19 +78,26 @@ export async function runAudit(
       console.log(formatAuditText(report));
     }
 
-    if (options?.minScore !== undefined && report.overallScore < options.minScore) {
+    if (
+      options?.minScore !== undefined &&
+      report.overallScore < options.minScore
+    ) {
       return 1; // Quality gate failed
     }
 
     // If any P0 failure or blocker exists, return exit code 1
     const hasP0Failure = report.findings.some(
-      (f) => (f.status === 'fail' || f.status === 'blocked') && f.severity === 'P0'
+      (f) =>
+        (f.status === 'fail' || f.status === 'blocked') && f.severity === 'P0'
     );
 
     return hasP0Failure ? 1 : 0;
   } catch (err: any) {
     console.error(`Error during audit: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -89,7 +106,12 @@ export async function runAudit(
 
 export async function runPlan(
   targetPath?: string,
-  options?: { preset?: Preset; json?: boolean; output?: string; userIntent?: string }
+  options?: {
+    preset?: Preset;
+    json?: boolean;
+    output?: string;
+    userIntent?: string;
+  }
 ): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
@@ -97,13 +119,17 @@ export async function runPlan(
     const snapshot = await scanner.scan();
 
     const planner = new Planner(snapshot, {
-      preset: options?.preset ?? 'minimal',
+      preset: options?.preset,
       userIntent: options?.userIntent,
     });
     const plan = await planner.createPlan();
 
     if (options?.output) {
-      await fs.writeFile(path.resolve(options.output), JSON.stringify(plan, null, 2), 'utf-8');
+      await fs.writeFile(
+        path.resolve(options.output),
+        JSON.stringify(plan, null, 2),
+        'utf-8'
+      );
       console.log(`Plan written to ${options.output}`);
     }
 
@@ -116,7 +142,10 @@ export async function runPlan(
     return 0;
   } catch (err: any) {
     console.error(`Error during plan: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -133,7 +162,7 @@ export async function runDiff(
     const snapshot = await scanner.scan();
 
     const planner = new Planner(snapshot, {
-      preset: options?.preset ?? 'minimal',
+      preset: options?.preset,
       userIntent: options?.userIntent,
     });
     const plan = await planner.createPlan();
@@ -143,7 +172,10 @@ export async function runDiff(
         JSON.stringify(
           {
             planId: plan.planId,
-            diffs: plan.actions.map((a) => ({ target: a.target, diff: a.proposedDiff })),
+            diffs: plan.actions.map((a) => ({
+              target: a.target,
+              diff: a.proposedDiff,
+            })),
           },
           null,
           2
@@ -156,7 +188,10 @@ export async function runDiff(
     return 0;
   } catch (err: any) {
     console.error(`Error during diff: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -165,18 +200,31 @@ export async function runDiff(
 
 export async function runApply(
   targetPath?: string,
-  options?: { approved?: boolean; preset?: Preset; dryRun?: boolean; json?: boolean; userIntent?: string }
+  options?: {
+    approved?: boolean;
+    preset?: Preset;
+    dryRun?: boolean;
+    json?: boolean;
+    userIntent?: string;
+    plan?: string;
+  }
 ): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
-    const scanner = new RepositoryScanner(resolvedPath);
-    const snapshot = await scanner.scan();
-
-    const planner = new Planner(snapshot, {
-      preset: options?.preset ?? 'minimal',
-      userIntent: options?.userIntent,
-    });
-    const plan = await planner.createPlan();
+    let plan: Plan;
+    if (options?.plan) {
+      plan = PlanSchema.parse(
+        JSON.parse(await fs.readFile(path.resolve(options.plan), 'utf-8'))
+      );
+      if (path.resolve(plan.repoRoot) !== resolvedPath)
+        throw new Error('Saved plan belongs to a different repository.');
+    } else {
+      const snapshot = await new RepositoryScanner(resolvedPath).scan();
+      plan = await new Planner(snapshot, {
+        preset: options?.preset,
+        userIntent: options?.userIntent,
+      }).createPlan();
+    }
 
     const applier = new PlanApplier(plan);
     const result = await applier.apply({
@@ -202,7 +250,10 @@ export async function runApply(
     if (err.message.includes('Stale plan')) {
       return 3;
     }
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -257,14 +308,20 @@ export async function runDrift(
     return 0;
   } catch (err: any) {
     console.error(`Error during drift check: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
   }
 }
 
-export async function runMediaPlan(targetPath?: string, options?: { json?: boolean }): Promise<number> {
+export async function runMediaPlan(
+  targetPath?: string,
+  options?: { json?: boolean }
+): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
     const scanner = new RepositoryScanner(resolvedPath);
@@ -281,14 +338,20 @@ export async function runMediaPlan(targetPath?: string, options?: { json?: boole
     return 0;
   } catch (err: any) {
     console.error(`Error during media plan: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
   }
 }
 
-export async function runGenerateDiagram(targetPath?: string, options?: { output?: string }): Promise<number> {
+export async function runGenerateDiagram(
+  targetPath?: string,
+  options?: { output?: string }
+): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
     const scanner = new RepositoryScanner(resolvedPath);
@@ -298,18 +361,26 @@ export async function runGenerateDiagram(targetPath?: string, options?: { output
     const outPath = options?.output ?? 'docs/media/architecture.svg';
     await organizer.saveArchitectureDiagram(snapshot, outPath);
 
-    console.log(`\n✔ Architecture diagram successfully generated: ${outPath}\n`);
+    console.log(
+      `\n✔ Architecture diagram successfully generated: ${outPath}\n`
+    );
     return 0;
   } catch (err: any) {
     console.error(`Error generating diagram: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
   }
 }
 
-export async function runGenerateCard(targetPath?: string, options?: { output?: string }): Promise<number> {
+export async function runGenerateCard(
+  targetPath?: string,
+  options?: { output?: string }
+): Promise<number> {
   try {
     const resolvedPath = path.resolve(targetPath ?? process.cwd());
     const scanner = new RepositoryScanner(resolvedPath);
@@ -319,11 +390,16 @@ export async function runGenerateCard(targetPath?: string, options?: { output?: 
     const outPath = options?.output ?? 'docs/media/social-preview.svg';
     await organizer.saveSocialCard(snapshot, outPath);
 
-    console.log(`\n✔ 1280x640 GitHub social preview card successfully generated: ${outPath}\n`);
+    console.log(
+      `\n✔ 1280x640 GitHub social preview card successfully generated: ${outPath}\n`
+    );
     return 0;
   } catch (err: any) {
     console.error(`Error generating social card: ${err.message}`);
-    if (err.message.includes('does not exist') || err.message.includes('Security violation')) {
+    if (
+      err.message.includes('does not exist') ||
+      err.message.includes('Security violation')
+    ) {
       return 2;
     }
     return 5;
@@ -418,9 +494,13 @@ export async function runInitCommunity(
       (typeof (manifest as any)?.author === 'string'
         ? (manifest as any).author
         : 'Project Maintainers');
-    const email = options?.email ?? 'security@example.com';
+    const email = options?.email;
 
-    const filesToCreate: Array<{ target: string; content: string; desc: string }> = [
+    const filesToCreate: Array<{
+      target: string;
+      content: string;
+      desc: string;
+    }> = [
       {
         target: '.github/ISSUE_TEMPLATE/bug_report.md',
         content: CommunityTemplates.bugReport(),
@@ -449,6 +529,10 @@ export async function runInitCommunity(
     ];
 
     if (options?.license) {
+      if (options.license !== 'MIT')
+        throw new Error(
+          'Only a complete MIT license is bundled. Add the complete text for your owner-selected license manually.'
+        );
       filesToCreate.push({
         target: 'LICENSE',
         content: LicenseAssistant.generateNotice(options.license, author),
@@ -461,10 +545,15 @@ export async function runInitCommunity(
     for (const item of filesToCreate) {
       idx++;
       const exists = await safeFs.fileExists(item.target);
+      if (exists) continue; // Initialization must not replace owner-written community policy.
       const beforeContent = exists ? await safeFs.readFile(item.target) : '';
       const beforeHash = exists ? UnifiedDiff.hash(beforeContent) : '';
       const afterHash = UnifiedDiff.hash(item.content);
-      const proposedDiff = UnifiedDiff.create(item.target, beforeContent, item.content);
+      const proposedDiff = UnifiedDiff.create(
+        item.target,
+        beforeContent,
+        item.content
+      );
 
       if (beforeHash !== afterHash) {
         actions.push({
@@ -476,7 +565,9 @@ export async function runInitCommunity(
           afterHash,
           proposedContent: item.content,
           proposedDiff,
-          evidenceIds: snapshot.manifests.map((m) => `manifest:${m.manifestType}:${m.path}`),
+          evidenceIds: snapshot.manifests.map(
+            (m) => `manifest:${m.manifestType}:${m.path}`
+          ),
           permission: 'local-write',
           risk: exists ? 'medium' : 'low',
         });
@@ -553,6 +644,70 @@ export async function runReleasePlan(
     return 0;
   } catch (err: any) {
     console.error(`Error during release plan: ${err.message}`);
+    return 5;
+  }
+}
+
+export async function runSync(
+  targetPath?: string,
+  options: {
+    approved?: boolean;
+    dryRun?: boolean;
+    approvedRemote?: boolean;
+    preset?: Preset;
+  } = {}
+): Promise<number> {
+  try {
+    console.log(
+      JSON.stringify(
+        await syncPresentation(path.resolve(targetPath ?? process.cwd()), {
+          ...options,
+          approved: Boolean(options.approved),
+        }),
+        null,
+        2
+      )
+    );
+    return 0;
+  } catch (err: any) {
+    console.error(`Presentation sync failed: ${err.message}`);
+    return err.exitCode ?? 5;
+  }
+}
+
+export async function runInit(
+  targetPath?: string,
+  options: { approved?: boolean; preset?: string } = {}
+): Promise<number> {
+  try {
+    const config = PresentationConfigSchema.parse({
+      preset: options.preset ?? 'signature',
+    });
+    const safeFs = new SafeFileSystem(
+      path.resolve(targetPath ?? process.cwd())
+    );
+    const files = {
+      '.pomade.json': JSON.stringify(config, null, 2) + '\n',
+      '.github/workflows/pomade.yml': PUSH_WORKFLOW,
+    };
+    for (const file of Object.keys(files)) {
+      if (await safeFs.fileExists(file))
+        throw new Error(
+          `${file} already exists; edit it directly to preserve your setup.`
+        );
+    }
+    if (!options.approved) {
+      console.log(JSON.stringify(files, null, 2));
+      return 0;
+    }
+    for (const [file, content] of Object.entries(files))
+      await safeFs.atomicWriteFile(file, content);
+    console.log(
+      'Installed .pomade.json and push workflow. Review `pomade diff` and adopt managed sections once with `pomade apply --approved`.'
+    );
+    return 0;
+  } catch (err: any) {
+    console.error(`Initialization failed: ${err.message}`);
     return 5;
   }
 }

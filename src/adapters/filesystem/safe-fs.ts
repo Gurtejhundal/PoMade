@@ -1,4 +1,5 @@
 import * as fs from 'node:fs/promises';
+import * as crypto from 'node:crypto';
 import * as fsSync from 'node:fs';
 import * as path from 'node:path';
 
@@ -84,13 +85,19 @@ export class SafeFileSystem {
   public isPathWithinRoot(targetPath: string): boolean {
     const resolved = path.resolve(this.root, targetPath);
     const relative = path.relative(this.root, resolved);
-    return !relative.startsWith('..') && !path.isAbsolute(relative);
+    return (
+      relative !== '..' &&
+      !relative.startsWith(`..${path.sep}`) &&
+      !path.isAbsolute(relative)
+    );
   }
 
   public assertPathWithinRoot(targetPath: string): string {
     const resolved = path.resolve(this.root, targetPath);
     if (!this.isPathWithinRoot(resolved)) {
-      throw new Error(`Security violation: Path '${targetPath}' escapes repository root '${this.root}'`);
+      throw new Error(
+        `Security violation: Path '${targetPath}' escapes repository root '${this.root}'`
+      );
     }
     return resolved;
   }
@@ -110,48 +117,84 @@ export class SafeFileSystem {
     return false;
   }
 
-  public async readFile(targetPath: string, maxSize = this.maxFileSize): Promise<string> {
+  public async assertRealPathWithinRoot(targetPath: string): Promise<string> {
     const resolved = this.assertPathWithinRoot(targetPath);
-    const stat = await fs.lstat(resolved);
+    const realRoot = await fs.realpath(this.root);
+    let ancestor = resolved;
+    while (true) {
+      try {
+        const real = await fs.realpath(ancestor);
+        const relative = path.relative(realRoot, real);
+        if (
+          relative === '..' ||
+          relative.startsWith(`..${path.sep}`) ||
+          path.isAbsolute(relative)
+        ) {
+          throw new Error(
+            `Security violation: '${targetPath}' resolves outside repository root`
+          );
+        }
+        return resolved;
+      } catch (err: any) {
+        if (err.code !== 'ENOENT') throw err;
+        const parent = path.dirname(ancestor);
+        if (parent === ancestor) throw err;
+        ancestor = parent;
+      }
+    }
+  }
+
+  public async readFile(
+    targetPath: string,
+    maxSize = this.maxFileSize
+  ): Promise<string> {
+    const resolved = await this.assertRealPathWithinRoot(targetPath);
+    const stat = await fs.stat(resolved);
 
     if (stat.isSymbolicLink()) {
       const real = await fs.realpath(resolved);
       if (!this.isPathWithinRoot(real)) {
-        throw new Error(`Security violation: Symlink '${targetPath}' points outside repository root to '${real}'`);
+        throw new Error(
+          `Security violation: Symlink '${targetPath}' points outside repository root to '${real}'`
+        );
       }
     }
 
     if (stat.size > maxSize) {
-      throw new Error(`File size ${stat.size} bytes exceeds limit of ${maxSize} bytes for '${targetPath}'`);
+      throw new Error(
+        `File size ${stat.size} bytes exceeds limit of ${maxSize} bytes for '${targetPath}'`
+      );
     }
 
     return await fs.readFile(resolved, 'utf-8');
   }
 
   public async fileExists(targetPath: string): Promise<boolean> {
+    const resolved = await this.assertRealPathWithinRoot(targetPath);
     try {
-      const resolved = this.assertPathWithinRoot(targetPath);
-      await fs.access(resolved);
+      await fs.lstat(resolved);
       return true;
-    } catch {
-      return false;
+    } catch (err: any) {
+      if (err.code === 'ENOENT') return false;
+      throw err;
     }
   }
 
-  public async atomicWriteFile(targetPath: string, content: string): Promise<void> {
-    const resolved = this.assertPathWithinRoot(targetPath);
+  public async atomicWriteFile(
+    targetPath: string,
+    content: string
+  ): Promise<void> {
+    const resolved = await this.assertRealPathWithinRoot(targetPath);
+    if (this.isSensitiveFile(targetPath))
+      throw new Error('Security violation: Refusing to write a sensitive file');
     await fs.mkdir(path.dirname(resolved), { recursive: true });
-    const tempPath = `${resolved}.pomade.tmp.${Date.now()}`;
-    await fs.writeFile(tempPath, content, 'utf-8');
+    const tempPath = `${resolved}.pomade.tmp.${crypto.randomUUID()}`;
     try {
+      await fs.writeFile(tempPath, content, { encoding: 'utf-8', flag: 'wx' });
+      await this.assertRealPathWithinRoot(targetPath);
       await fs.rename(tempPath, resolved);
-    } catch (err: any) {
-      try {
-        await fs.unlink(tempPath);
-      } catch {
-        // ignore cleanup error
-      }
-      throw new Error(`Failed to atomically write file '${targetPath}': ${err.message}`);
+    } finally {
+      await fs.rm(tempPath, { force: true });
     }
   }
 
@@ -160,11 +203,15 @@ export class SafeFileSystem {
     onWarning?: (warning: string) => void
   ): Promise<DiscoveredFile[]> {
     const results: DiscoveredFile[] = [];
-    const queue: Array<{ dir: string; depth: number }> = [{ dir: subDir, depth: 0 }];
+    const queue: Array<{ dir: string; depth: number }> = [
+      { dir: subDir, depth: 0 },
+    ];
 
     while (queue.length > 0) {
       if (results.length >= this.maxFilesScanned) {
-        onWarning?.(`Scan limit reached: Capped at ${this.maxFilesScanned} files.`);
+        onWarning?.(
+          `Scan limit reached: Capped at ${this.maxFilesScanned} files.`
+        );
         break;
       }
 
@@ -184,6 +231,7 @@ export class SafeFileSystem {
 
       let entries: fsSync.Dirent[];
       try {
+        await this.assertRealPathWithinRoot(currentAbsolute);
         entries = await fs.readdir(currentAbsolute, { withFileTypes: true });
       } catch (err: any) {
         onWarning?.(`Could not read directory '${dir}': ${err.message}`);
@@ -191,12 +239,21 @@ export class SafeFileSystem {
       }
 
       for (const entry of entries) {
+        if (results.length >= this.maxFilesScanned) {
+          onWarning?.(
+            `Scan limit reached: Capped at ${this.maxFilesScanned} files.`
+          );
+          return results;
+        }
         const entryName = entry.name;
         const entryRel = path.join(dir, entryName);
         const entryAbs = path.resolve(this.root, entryRel);
 
         if (entry.isDirectory()) {
-          if (DEFAULT_EXCLUDED_DIRS.has(entryName) || entryName.startsWith('.')) {
+          if (
+            DEFAULT_EXCLUDED_DIRS.has(entryName) ||
+            entryName.startsWith('.')
+          ) {
             // Check if it's .github which we need to scan
             if (entryName === '.github') {
               queue.push({ dir: entryRel, depth: depth + 1 });
@@ -217,7 +274,9 @@ export class SafeFileSystem {
           if (isSymlink) {
             const real = await fs.realpath(entryAbs);
             if (!this.isPathWithinRoot(real)) {
-              onWarning?.(`Symlink '${entryRel}' references outside repository; skipped.`);
+              onWarning?.(
+                `Symlink '${entryRel}' references outside repository; skipped.`
+              );
               continue;
             }
           }
@@ -239,6 +298,6 @@ export class SafeFileSystem {
       }
     }
 
-    return results;
+    return results.slice(0, this.maxFilesScanned);
   }
 }

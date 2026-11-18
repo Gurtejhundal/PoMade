@@ -11,7 +11,10 @@ export interface ReleasePlan {
 }
 
 export class ReleasePlanner {
-  public static plan(snapshot: RepositorySnapshot, commitMessages: string[] = []): ReleasePlan {
+  public static plan(
+    snapshot: RepositorySnapshot,
+    commitMessages: string[] = []
+  ): ReleasePlan {
     const currentVersion = snapshot.manifests[0]?.version ?? '0.1.0';
     const warnings: string[] = [];
 
@@ -28,7 +31,11 @@ export class ReleasePlanner {
       const trimmed = msg.trim();
       const lower = trimmed.toLowerCase();
 
-      if (lower.includes('breaking change') || lower.startsWith('breaking:')) {
+      if (
+        lower.includes('breaking change') ||
+        lower.startsWith('breaking:') ||
+        /^[a-z]+(?:\([^)]+\))?!:/.test(lower)
+      ) {
         hasBreaking = true;
         features.push(trimmed);
       } else if (lower.startsWith('feat:') || lower.startsWith('feat(')) {
@@ -52,9 +59,11 @@ export class ReleasePlanner {
     const proposedVersion = this.bumpVersion(currentVersion, bumpType);
 
     // Tests status
-    const verifiedTests = snapshot.manifests.some((m) => m.scripts?.['test']) && snapshot.stage !== 'idea';
+    const verifiedTests = false;
     if (!verifiedTests) {
-      warnings.push('Test verification not completed or tests not observed; do not publish without running tests.');
+      warnings.push(
+        'Test verification not completed or tests not observed; do not publish without running tests.'
+      );
     }
 
     const dateStr = new Date().toISOString().split('T')[0];
@@ -87,8 +96,14 @@ export class ReleasePlanner {
     };
   }
 
-  private static bumpVersion(version: string, type: 'major' | 'minor' | 'patch'): string {
-    const parts = version.replace(/^[v^~]/, '').split('.').map((p) => parseInt(p, 10) || 0);
+  private static bumpVersion(
+    version: string,
+    type: 'major' | 'minor' | 'patch'
+  ): string {
+    const parts = version
+      .replace(/^[v^~]/, '')
+      .split('.')
+      .map((p) => parseInt(p, 10) || 0);
     while (parts.length < 3) parts.push(0);
 
     let [major, minor, patch] = parts;

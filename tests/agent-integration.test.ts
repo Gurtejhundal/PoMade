@@ -1,14 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
-import { runScan, runAudit, runPlan, runDiff, runApply, runDrift } from '../src/cli/commands.js';
+import {
+  runScan,
+  runAudit,
+  runPlan,
+  runDiff,
+  runApply,
+  runDrift,
+} from '../src/cli/commands.js';
 import { RepositoryScanner } from '../src/core/scan/scanner.js';
 import { Planner } from '../src/core/plan/planner.js';
 import { PlanApplier } from '../src/core/apply/applier.js';
 import { DriftDetector } from '../src/core/drift/drift-detector.js';
 
 describe('Agent Integration & Lifecycle Simulation', () => {
-  const agentWorkspace = path.resolve(process.cwd(), 'fixtures/agent-e2e-workspace');
+  const agentWorkspace = path.resolve(
+    process.cwd(),
+    'fixtures/agent-e2e-workspace'
+  );
   const skillFile = path.resolve(process.cwd(), 'skills/pomade/SKILL.md');
 
   it('validates that portable SKILL.md adheres to Agent Skills specification', async () => {
@@ -23,7 +33,7 @@ describe('Agent Integration & Lifecycle Simulation', () => {
     // Check agent rules
     expect(content).toContain('Evidence > Adjectives');
     expect(content).toContain('Preserve Human Writing');
-    expect(content).toContain('pomade apply --approved');
+    expect(content).toContain('pomade apply --plan');
   });
 
   it('simulates end-to-end coding agent lifecycle: scan -> audit -> plan -> diff -> approval -> apply -> drift -> patch', async () => {
@@ -66,7 +76,9 @@ describe('Agent Integration & Lifecycle Simulation', () => {
       expect(diffCode).toBe(0);
 
       // Step 4: Agent attempts apply WITHOUT approval -> must be refused!
-      const unauthorizedCode = await runApply(agentWorkspace, { approved: false });
+      const unauthorizedCode = await runApply(agentWorkspace, {
+        approved: false,
+      });
       expect(unauthorizedCode).toBe(4);
 
       // Verify file was NOT created
@@ -77,23 +89,39 @@ describe('Agent Integration & Lifecycle Simulation', () => {
       expect(readmeExistsBefore).toBe(false);
 
       // Step 5: User grants approval -> apply succeeds
-      const approvedCode = await runApply(agentWorkspace, { approved: true, preset: 'minimal' });
+      const approvedCode = await runApply(agentWorkspace, {
+        approved: true,
+        preset: 'minimal',
+      });
       expect(approvedCode).toBe(0);
 
       // Verify README was created with managed markers
-      const initialReadme = await fs.readFile(path.join(agentWorkspace, 'README.md'), 'utf-8');
+      const initialReadme = await fs.readFile(
+        path.join(agentWorkspace, 'README.md'),
+        'utf-8'
+      );
       expect(initialReadme).toContain('# agent-managed-tool');
       expect(initialReadme).toContain('<!-- pomade:start header -->');
       expect(initialReadme).toContain('<!-- pomade:start quickstart -->');
 
       // Human user inserts a custom manual note outside managed markers
       const humanCustomizedReadme = `${initialReadme}\n\n## Custom Human Section\nWritten by developer by hand.\n`;
-      await fs.writeFile(path.join(agentWorkspace, 'README.md'), humanCustomizedReadme, 'utf-8');
+      await fs.writeFile(
+        path.join(agentWorkspace, 'README.md'),
+        humanCustomizedReadme,
+        'utf-8'
+      );
 
       // Step 6: Code change occurs! Developer adds a new script to package.json
-      const updatedPkg = JSON.parse(await fs.readFile(path.join(agentWorkspace, 'package.json'), 'utf-8'));
+      const updatedPkg = JSON.parse(
+        await fs.readFile(path.join(agentWorkspace, 'package.json'), 'utf-8')
+      );
       updatedPkg.scripts.dev = 'node src/dev.js';
-      await fs.writeFile(path.join(agentWorkspace, 'package.json'), JSON.stringify(updatedPkg, null, 2), 'utf-8');
+      await fs.writeFile(
+        path.join(agentWorkspace, 'package.json'),
+        JSON.stringify(updatedPkg, null, 2),
+        'utf-8'
+      );
 
       // Step 7: Drift detection runs!
       const scannerAfterCodeChange = new RepositoryScanner(agentWorkspace);
@@ -103,10 +131,14 @@ describe('Agent Integration & Lifecycle Simulation', () => {
 
       // Drift detector identifies that 'dev' script was added to code but missing from README!
       expect(driftReport.hasDrift).toBe(true);
-      expect(driftReport.findings.some((f) => f.id === 'drift-script-dev')).toBe(true);
+      expect(
+        driftReport.findings.some((f) => f.id === 'drift-script-dev')
+      ).toBe(true);
 
       // Step 8: Agent runs plan to resolve drift
-      const planner = new Planner(snapshotAfterCodeChange, { preset: 'minimal' });
+      const planner = new Planner(snapshotAfterCodeChange, {
+        preset: 'minimal',
+      });
       const patchPlan = await planner.createPlan();
 
       expect(patchPlan.actions).toHaveLength(1);
@@ -119,7 +151,10 @@ describe('Agent Integration & Lifecycle Simulation', () => {
       expect(applyResult.appliedCount).toBe(1);
 
       // Step 10: Verify the human-written custom section is 100% PRESERVED!
-      const finalReadme = await fs.readFile(path.join(agentWorkspace, 'README.md'), 'utf-8');
+      const finalReadme = await fs.readFile(
+        path.join(agentWorkspace, 'README.md'),
+        'utf-8'
+      );
       expect(finalReadme).toContain('## Custom Human Section');
       expect(finalReadme).toContain('Written by developer by hand.');
       expect(finalReadme).toContain('npm run dev');

@@ -92,26 +92,16 @@ Thank you for your interest in contributing!
 `;
   }
 
-  public static security(projectName: string, contactEmail = 'security@example.com'): string {
+  public static security(projectName: string, contactEmail?: string): string {
     return `# Security Policy
-
-## Supported Versions
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x     | :white_check_mark: |
-| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within ${projectName}, please do NOT open a public issue.
+If you discover a security vulnerability within ${projectName}, avoid posting sensitive details in a public issue.
 
-Instead, please send an email to \`${contactEmail}\`. Please include:
-- A description of the vulnerability.
-- Steps to reproduce or proof-of-concept.
-- Potential impact.
+${contactEmail ? `Contact the maintainers at \`${contactEmail}\` with a description, reproduction steps, and impact.` : 'The maintainers have not configured a private reporting contact. Check the repository Security tab for private vulnerability reporting before submitting details.'}
 
-We will acknowledge receipt within 48 hours and provide a timeline for a resolution.
+Supported versions and response timelines have not been declared by the maintainers.
 `;
   }
 }

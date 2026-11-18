@@ -14,7 +14,9 @@ export class GitHubMetadataPlanner {
   public static plan(snapshot: RepositorySnapshot): GitHubMetadataPlan {
     const manifest = snapshot.manifests[0];
     const name = manifest?.name ?? 'project';
-    const rawDesc = manifest?.description ?? `A ${snapshot.kind} project built with ${snapshot.primaryLanguage ?? 'modern tooling'}.`;
+    const rawDesc =
+      manifest?.description ??
+      `A ${snapshot.kind} project built with ${snapshot.primaryLanguage ?? 'modern tooling'}.`;
 
     // Ensure concise, professional description <= 100 chars, no trailing period
     let proposedDescription = rawDesc.trim();
@@ -58,15 +60,26 @@ export class GitHubMetadataPlanner {
     // Always relevant
     topicSet.add('documentation');
 
-    const proposedTopics = Array.from(topicSet).slice(0, 7);
+    for (const keyword of manifest?.keywords ?? []) {
+      const topic = keyword
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 50);
+      if (topic) topicSet.add(topic);
+    }
+    const proposedTopics = Array.from(topicSet).slice(0, 20);
 
     // Build command preview for gh repo edit
     const topicFlags = proposedTopics.map((t) => `--add-topic ${t}`).join(' ');
     const repoSlug = snapshot.gitState.remoteUrl
-      ? snapshot.gitState.remoteUrl.replace(/^.*github\.com[/:]([^/]+\/[^/.]+)(\.git)?$/, '$1')
+      ? snapshot.gitState.remoteUrl.replace(
+          /^.*github\.com[/:]([^/]+\/[^/.]+)(\.git)?$/,
+          '$1'
+        )
       : 'OWNER/REPO';
 
-    const commandPreview = `gh repo edit ${repoSlug} --description "${proposedDescription}" ${topicFlags}`;
+    const commandPreview = `gh repo edit ${repoSlug} --description ${JSON.stringify(proposedDescription).replace(/[$`]/g, '\\$&')} ${topicFlags}`;
 
     return {
       currentDescription: manifest?.description,
@@ -74,7 +87,9 @@ export class GitHubMetadataPlanner {
       currentTopics: [],
       proposedTopics,
       evidence: [
-        manifest ? `manifest:${manifest.manifestType}:${manifest.path}` : 'snapshot',
+        manifest
+          ? `manifest:${manifest.manifestType}:${manifest.path}`
+          : 'snapshot',
         ...snapshot.frameworks.map((f) => `framework:${f}`),
       ],
       commandPreview,

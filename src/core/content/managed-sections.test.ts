@@ -11,8 +11,16 @@ describe('ManagedSections', () => {
 
   it('detects managed markers in content', () => {
     expect(ManagedSections.hasManagedSections('Plain text')).toBe(false);
-    expect(ManagedSections.hasManagedSections('<!-- pomade:start header --># Hi<!-- pomade:end header -->')).toBe(true);
-    expect(ManagedSections.hasManagedSections('<!-- repoatelier:start header --># Hi<!-- repoatelier:end header -->')).toBe(true);
+    expect(
+      ManagedSections.hasManagedSections(
+        '<!-- pomade:start header --># Hi<!-- pomade:end header -->'
+      )
+    ).toBe(true);
+    expect(
+      ManagedSections.hasManagedSections(
+        '<!-- repoatelier:start header --># Hi<!-- repoatelier:end header -->'
+      )
+    ).toBe(true);
   });
 
   it('parses multiple valid managed sections correctly', () => {
@@ -50,7 +58,9 @@ npm install
 <!-- pomade:start dup -->1<!-- pomade:end dup -->
 <!-- pomade:start dup -->2<!-- pomade:end dup -->
 `;
-    expect(() => ManagedSections.parse(doc)).toThrowError(/Duplicate managed section/);
+    expect(() => ManagedSections.parse(doc)).toThrowError(
+      /Duplicate managed section/
+    );
   });
 
   it('preserves surrounding human-written content when updating a section', () => {
@@ -64,11 +74,23 @@ npm install
 
 Handwritten footer paragraph.
 `;
-    const updated = ManagedSections.replaceSection(original, 'quickstart', 'npm install && npm test');
+    const updated = ManagedSections.replaceSection(
+      original,
+      'quickstart',
+      'npm install && npm test'
+    );
 
     expect(updated).toContain('Handwritten intro paragraph.');
     expect(updated).toContain('Handwritten footer paragraph.');
     expect(updated).toContain('npm install && npm test');
     expect(updated).not.toContain('\nnpm install\n');
   });
+});
+
+it('rejects nested and crossed managed sections', () => {
+  for (const text of [
+    '<!-- pomade:start a --><!-- pomade:start b --><!-- pomade:end b --><!-- pomade:end a -->',
+    '<!-- pomade:start a --><!-- pomade:start b --><!-- pomade:end a --><!-- pomade:end b -->',
+  ])
+    expect(() => ManagedSections.parse(text)).toThrow(/overlap|nest/);
 });

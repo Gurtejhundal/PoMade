@@ -114,10 +114,11 @@ export const ManifestFactSchema = z.object({
   version: z.string().optional(),
   description: z.string().optional(),
   license: z.string().optional(),
-  scripts: z.record(z.string()).optional(),
+  scripts: z.record(z.string(), z.string()).optional(),
   dependencies: z.array(z.string()).optional(),
   devDependencies: z.array(z.string()).optional(),
   entrypoints: z.array(z.string()).optional(),
+  keywords: z.array(z.string()).optional(),
 });
 export type ManifestFact = z.infer<typeof ManifestFactSchema>;
 
@@ -157,7 +158,7 @@ export const RepositorySnapshotSchema = z.object({
   kind: ProjectKindSchema,
   stage: MaturityStageSchema,
   primaryLanguage: z.string().optional(),
-  languages: z.record(z.number()),
+  languages: z.record(z.string(), z.number()),
   frameworks: z.array(z.string()),
   manifests: z.array(ManifestFactSchema),
   docs: z.array(DocumentationFactSchema),
@@ -193,7 +194,13 @@ export const AuditReportSchema = z.object({
 });
 export type AuditReport = z.infer<typeof AuditReportSchema>;
 
-export const PresetSchema = z.enum(['minimal', 'studio', 'maintainer']);
+export const PresetSchema = z.enum([
+  'minimal',
+  'signature',
+  'animated',
+  'studio',
+  'maintainer',
+]);
 export type Preset = z.infer<typeof PresetSchema>;
 
 export const ActionKindSchema = z.enum([

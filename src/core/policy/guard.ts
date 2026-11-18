@@ -13,7 +13,14 @@ export class PolicyGuard {
     }
   }
 
-  public static async verifyFreshness(fs: SafeFileSystem, action: Action): Promise<void> {
+  public static async verifyFreshness(
+    fs: SafeFileSystem,
+    action: Action
+  ): Promise<void> {
+    if (UnifiedDiff.hash(action.proposedContent) !== action.afterHash)
+      throw new Error(
+        'Plan content hash mismatch. Regenerate and review the plan.'
+      );
     const exists = await fs.fileExists(action.target);
     let currentHash = '';
 
@@ -25,8 +32,8 @@ export class PolicyGuard {
     if (currentHash !== action.beforeHash) {
       const err = new Error(
         `Stale plan conflict: File '${action.target}' was modified after this plan was created. ` +
-        `Expected hash ${action.beforeHash || '(empty)'}, but observed ${currentHash || '(empty)'}. ` +
-        `Please re-run 'pomade plan' before applying.`
+          `Expected hash ${action.beforeHash || '(empty)'}, but observed ${currentHash || '(empty)'}. ` +
+          `Please re-run 'pomade plan' before applying.`
       );
       (err as any).exitCode = 3;
       throw err;

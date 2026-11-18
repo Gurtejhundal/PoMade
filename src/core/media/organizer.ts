@@ -12,13 +12,19 @@ export class MediaOrganizer {
     this.fs = new SafeFileSystem(this.repoRoot);
   }
 
-  public async saveArchitectureDiagram(snapshot: RepositorySnapshot, targetRel = 'docs/media/architecture.svg'): Promise<string> {
+  public async saveArchitectureDiagram(
+    snapshot: RepositorySnapshot,
+    targetRel = 'docs/media/architecture.svg'
+  ): Promise<string> {
     const svg = SvgGenerator.generateArchitectureDiagram(snapshot);
     await this.fs.atomicWriteFile(targetRel, svg);
     return targetRel;
   }
 
-  public async saveSocialCard(snapshot: RepositorySnapshot, targetRel = 'docs/media/social-preview.svg'): Promise<string> {
+  public async saveSocialCard(
+    snapshot: RepositorySnapshot,
+    targetRel = 'docs/media/social-preview.svg'
+  ): Promise<string> {
     const svg = SvgGenerator.generateSocialCard(snapshot);
     await this.fs.atomicWriteFile(targetRel, svg);
     return targetRel;
@@ -42,7 +48,7 @@ export class MediaOrganizer {
     altText: string
   ): string {
     return `<picture>
-  <source srcset="${gifPath}" type="image/gif" />
+  <source media="(prefers-reduced-motion: no-preference)" srcset="${gifPath}" type="image/gif" />
   <img src="${fallbackPngPath}" alt="${altText}" width="100%" />
 </picture>`;
   }

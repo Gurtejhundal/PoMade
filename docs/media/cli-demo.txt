@@ -1,0 +1,22 @@
+$ pomade init --help
+Usage: pomade init [options] [path]
+
+Install presentation config and a push workflow; preview unless --approved
+
+Options:
+  --preset <preset>   (choices: "minimal", "signature", "animated", default:
+                     "signature")
+  --approved         Write new configuration and workflow files
+  -h, --help         display help for command
+
+$ pomade sync --help
+Usage: pomade sync [options] [path]
+
+Refresh managed README and covers; optionally synchronize remote About/topics
+
+Options:
+  --approved         Authorize local managed content writes
+  --approved-remote  Authorize GitHub About/topics updates
+  --dry-run          Preview without local or remote writes
+  --preset <preset>   (choices: "minimal", "signature", "animated")
+  -h, --help         display help for command

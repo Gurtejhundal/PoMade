@@ -22,3 +22,7 @@ export * from './core/github/release-planner.js';
 export * from './adapters/github/github-adapter.js';
 export * from './cli/formatter.js';
 export * from './cli/commands.js';
+
+export * from './core/content/templates.js';
+export * from './core/content/config.js';
+export * from './core/sync/sync.js';

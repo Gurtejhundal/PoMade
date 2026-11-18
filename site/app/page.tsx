@@ -1,369 +1,360 @@
-import React from 'react';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  Sparkles,
-  ShieldCheck,
-  CheckCircle2,
-  Terminal,
-  FileCode,
-  Layout,
-  RefreshCw,
-  GitPullRequest,
-  Cpu,
-  Layers,
-  Palette,
-  Eye,
-  Sliders,
-  ExternalLink,
-} from 'lucide-react';
-import { TerminalDemo } from '../components/TerminalDemo';
-import { BeforeAfterSlider } from '../components/BeforeAfterSlider';
-
+import { TemplateSwitcher } from '../components/TemplateSwitcher';
+import { StarHistory } from '../components/StarHistory';
+const repo = 'https://github.com/Gurtejhundal/PoMade';
+function Shield({
+  label,
+  value,
+  color,
+  href,
+}: {
+  label: string;
+  value: string;
+  color: string;
+  href: string;
+}) {
+  return (
+    <a className="readme-shield" href={href}>
+      <span>{label}</span>
+      <strong style={{ backgroundColor: color }}>{value}</strong>
+    </a>
+  );
+}
 export default function HomePage() {
   return (
-    <div className="space-y-28 py-8 sm:py-14">
-      {/* 1. HERO SECTION */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-        {/* Mascot Centerpiece */}
-        <div className="flex justify-center">
-          <div className="relative group">
-            <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-full border-2 border-border-strong-light dark:border-border-strong-dark bg-white dark:bg-[#121318] p-2 shadow-card overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              <img
-                src="/pomade-mascot.png"
-                alt="Pomade Mascot — The Perfectionist"
-                className="w-full h-full object-cover rounded-full"
-              />
-            </div>
-            {/* Interactive speech pill */}
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-mono bg-canvas-dark text-slate-100 border border-[#2B3040] shadow-md flex items-center space-x-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Judging repository presentation...</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Title & Taglines */}
-        <div className="space-y-4 max-w-3xl mx-auto pt-2">
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-text-primary-light dark:text-text-primary-dark font-sans">
-            Pomade
-          </h1>
-          <p className="text-xl sm:text-2xl font-serif italic text-copper-600 dark:text-amberGold-400 font-medium">
-            Make every repo worth opening.
-          </p>
-          <p className="text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-sans max-w-2xl mx-auto leading-relaxed">
-            He doesn't write your code. He makes sure it looks finished.
-            <br />
-            <span className="text-text-muted-light dark:text-text-muted-dark text-sm sm:text-base">
-              The agent-native GitHub repository presentation, packaging, and maintenance engine.
-            </span>
-          </p>
-        </div>
-
-        {/* Action CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          <a
-            href="/templates"
-            className="flex items-center space-x-2 px-6 py-3 rounded-lg bg-copper-500 hover:bg-copper-600 dark:bg-amberGold-500 dark:hover:bg-amberGold-600 text-white dark:text-black font-mono text-sm font-semibold transition-all shadow-editorial hover:shadow-card"
-          >
-            <span>Explore 6 Templates</span>
-            <ArrowRight className="w-4 h-4" />
-          </a>
-
-          <a
-            href="/studio"
-            className="flex items-center space-x-2 px-6 py-3 rounded-lg border border-border-strong-light dark:border-border-strong-dark bg-surface-light dark:bg-surface-dark hover:bg-subtle-light dark:hover:bg-subtle-dark text-text-primary-light dark:text-text-primary-dark font-mono text-sm font-semibold transition-colors"
-          >
-            <Sliders className="w-4 h-4 text-copper-500 dark:text-amberGold-500" />
-            <span>Open README Studio</span>
-          </a>
-
-          <a
-            href="https://github.com/Gurtejhundal/PoMade"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center space-x-1.5 px-4 py-3 text-xs font-mono text-text-muted-light dark:text-text-muted-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors"
-          >
-            <span>GitHub Repo</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
-
-        {/* Quick Command Pill */}
-        <div className="pt-2">
-          <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-md bg-subtle-light dark:bg-subtle-dark border border-border-subtle-light dark:border-border-subtle-dark text-xs font-mono text-text-secondary-light dark:text-text-secondary-dark">
-            <span className="text-text-muted-light dark:text-text-muted-dark">$</span>
-            <span>npm install -g pomade</span>
-            <span className="text-border-strong-light dark:text-border-strong-dark">|</span>
-            <span className="text-copper-600 dark:text-amberGold-400 font-semibold">Ready in 2 seconds</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. INTERACTIVE TERMINAL SIMULATION */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-mono uppercase tracking-wider text-copper-600 dark:text-amberGold-400 font-semibold">
-            Live Terminal Engine
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-            See Pomade in Action
-          </h2>
-          <p className="text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark max-w-xl mx-auto font-mono">
-            Pure evidence projection. Zero hallucinations. Click each command tab to inspect real output.
-          </p>
-        </div>
-
-        <TerminalDemo />
-      </section>
-
-      {/* 3. THE PROBLEM & BEFORE/AFTER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <BeforeAfterSlider />
-      </section>
-
-      {/* 4. HOW POMADE WORKS (5-STEP WALKTHROUGH) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-mono uppercase tracking-wider text-copper-600 dark:text-amberGold-400 font-semibold">
-            Proven Methodology
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-            How Pomade Works
-          </h2>
-          <p className="text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark max-w-xl mx-auto font-mono">
-            From raw repository to polished open-source showcase in 5 deterministic steps.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {[
-            {
-              step: '01',
-              title: 'Inspect',
-              desc: 'Scanner traverses manifests (Node, Python, Rust, Go), licenses, and git state without side effects.',
-            },
-            {
-              step: '02',
-              title: 'Classify',
-              desc: 'Evidence ledger validates claims. Audit rubric evaluates repository maturity across 6 pillars.',
-            },
-            {
-              step: '03',
-              title: 'Choose Design',
-              desc: 'Select from 6 curated templates tailored to CLI tools, web apps, SDKs, or ML research.',
-            },
-            {
-              step: '04',
-              title: 'Preview Diff',
-              desc: 'Review standard unified diffs. Hand-crafted sections outside managed markers remain untouched.',
-            },
-            {
-              step: '05',
-              title: 'Approve & Apply',
-              desc: 'Atomic file write requires explicit local approval. Remote GitHub sync requires separate auth.',
-            },
-          ].map((item, idx) => (
-            <div
-              key={item.step}
-              className="p-5 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-3 relative group hover:border-copper-500/50 dark:hover:border-amberGold-500/50 transition-colors"
-            >
-              <div className="font-mono text-xs font-bold text-copper-600 dark:text-amberGold-400">
-                STEP {item.step}
-              </div>
-              <h3 className="font-bold text-sm text-text-primary-light dark:text-text-primary-dark">
-                {item.title}
-              </h3>
-              <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. FEATURE DEEP-DIVE (REAL ARTIFACTS) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-mono uppercase tracking-wider text-copper-600 dark:text-amberGold-400 font-semibold">
-            Engine Capabilities
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-            Built for Serious Repositories
-          </h2>
-          <p className="text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark max-w-xl mx-auto font-mono">
-            Every feature produces production-ready code and assets verified against GitHub rendering.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Feature 1 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <FileCode className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Managed Sections
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              Pomade manages only blocks wrapped in <code className="text-[11px] bg-subtle-light dark:bg-subtle-dark px-1 py-0.5 rounded">&lt;!-- pomade:start/end --&gt;</code>. Any prose or custom documentation you write by hand is guaranteed untouched.
-            </p>
-          </div>
-
-          {/* Feature 2 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <Palette className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Vector Visual Assets
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              Generates responsive, dark-mode compatible SVG architecture diagrams and compliant 1280×640 GitHub social cards saved into <code className="text-[11px] bg-subtle-light dark:bg-subtle-dark px-1 py-0.5 rounded">docs/media/</code>.
-            </p>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <RefreshCw className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Drift Detection
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              When scripts in <code className="text-[11px] bg-subtle-light dark:bg-subtle-dark px-1 py-0.5 rounded">package.json</code> or dependencies change, <code className="text-[11px] bg-subtle-light dark:bg-subtle-dark px-1 py-0.5 rounded">pomade drift</code> immediately alerts agents to synchronize documentation.
-            </p>
-          </div>
-
-          {/* Feature 4 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Safe Filesystem Guards
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              Built with path traversal defense, symlink boundaries, and automatic exclusion of <code className="text-[11px] bg-subtle-light dark:bg-subtle-dark px-1 py-0.5 rounded">.env*</code>, SSH keys, and credentials files.
-            </p>
-          </div>
-
-          {/* Feature 5 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <GitPullRequest className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Community Health Suite
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              Initializes bug report templates, feature requests, PR templates, and verified CONTRIBUTING / SECURITY policies with a single approved command.
-            </p>
-          </div>
-
-          {/* Feature 6 */}
-          <div className="p-6 rounded-xl border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-copper-50 dark:bg-amberGold-500/10 flex items-center justify-center text-copper-600 dark:text-amberGold-400 border border-copper-200 dark:border-amberGold-500/20">
-              <Layers className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-              Release & Semver Planner
-            </h3>
-            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed font-sans">
-              Analyzes git commit history, classifies breaking changes and feature additions, drafts semver bumps, and verifies that test suites pass before release.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. CODING AGENT INTEGRATIONS */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="p-8 rounded-2xl border border-border-strong-light dark:border-border-strong-dark bg-gradient-to-b from-subtle-light/60 to-surface-light dark:from-subtle-dark/40 dark:to-surface-dark space-y-6">
-          <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-copper-600 dark:text-amberGold-400 font-semibold">
-              Ecosystem Architecture
-            </span>
-            <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-              Agent-Native by Design
-            </h2>
-            <p className="text-xs sm:text-sm text-text-secondary-light dark:text-text-secondary-dark max-w-2xl font-sans leading-relaxed">
-              Pomade is not a manual web-only form. It packages as a portable <code className="text-xs font-mono bg-subtle-light dark:bg-subtle-dark px-1.5 py-0.5 rounded">SKILL.md</code> and CLI toolkit that any compatible AI coding agent invokes autonomously during development.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-canvas-dark text-slate-100 font-mono text-xs overflow-x-auto">
-            <div className="text-slate-400 mb-2">// The Pomade Agent Pipeline</div>
-            <div className="text-emerald-400">
-              AI Coding Agent ──&gt; skills/pomade/SKILL.md ──&gt; Pomade Core Engine ──&gt; Validated Repository Updates
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-            {[
-              { name: 'Claude Code', status: 'Verified Supported' },
-              { name: 'Antigravity', status: 'Verified Supported' },
-              { name: 'Cursor & Cline', status: 'Verified Supported' },
-              { name: 'GitHub Copilot', status: 'Planned Integration' },
-            ].map((agent) => (
-              <div
-                key={agent.name}
-                className="p-3 rounded-lg border border-border-subtle-light dark:border-border-subtle-dark bg-surface-light dark:bg-surface-dark text-center space-y-1"
-              >
-                <div className="font-mono text-xs font-bold text-text-primary-light dark:text-text-primary-dark">
-                  {agent.name}
-                </div>
-                <div
-                  className={`text-[10px] font-mono ${
-                    agent.status.includes('Verified')
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-text-muted-light dark:text-text-muted-dark'
-                  }`}
-                >
-                  {agent.status}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. CLOSING CTA SECTION */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        <div className="inline-block relative">
-          <div className="w-20 h-20 rounded-full border border-border-strong-light dark:border-border-strong-dark overflow-hidden mx-auto bg-white dark:bg-black p-1 shadow-card">
+    <article className="standalone-readme" id="content">
+      <header className="readme-opening">
+        <img
+          className="readme-mascot"
+          src="/pomade-mascot.png"
+          alt="PoMade, your repository's finishing touch"
+          width="244"
+          height="244"
+          fetchPriority="high"
+        />
+        <h1>PoMade</h1>
+        <p className="readme-punchline">
+          <em>Code pushed. First impression handled.</em>
+        </p>
+        <p className="readme-summary">
+          Your agent writes the code.
+          <br />
+          PoMade makes the repository worth opening.
+        </p>
+        <p className="readme-anchor-links">
+          <a href="#installation">Installation</a>
+          <span> · </span>
+          <a href="#how-it-works">How it works</a>
+          <span> · </span>
+          <a href="#templates">Templates</a>
+          <span> · </span>
+          <Link href="/studio">README Studio</Link>
+          <span> · </span>
+          <a href={repo}>GitHub</a>
+        </p>
+        <div className="flat-badge-row primary-readme-badges">
+          <a href={`${repo}/stargazers`}>
             <img
-              src="/pomade-mascot.png"
-              alt="Pomade Mascot"
-              className="w-full h-full object-cover rounded-full"
+              src="https://img.shields.io/github/stars/Gurtejhundal/PoMade?style=flat-square&color=24292f&label=stars"
+              alt="PoMade GitHub stars"
+              height="20"
             />
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-text-primary-light dark:text-text-primary-dark tracking-tight">
-            Good code deserves a good introduction.
-          </h2>
-          <p className="text-sm text-text-muted-light dark:text-text-muted-dark max-w-lg mx-auto font-sans">
-            Make your next open-source release look finished, trustworthy, and impossible to ignore.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <a
-            href="/studio"
-            className="px-6 py-3 rounded-lg bg-copper-500 hover:bg-copper-600 dark:bg-amberGold-500 dark:hover:bg-amberGold-600 text-white dark:text-black font-mono text-sm font-semibold transition-all shadow-editorial"
-          >
-            Launch README Studio
           </a>
-          <a
-            href="/templates"
-            className="px-6 py-3 rounded-lg border border-border-strong-light dark:border-border-strong-dark bg-surface-light dark:bg-surface-dark hover:bg-subtle-light dark:hover:bg-subtle-dark text-text-primary-light dark:text-text-primary-dark font-mono text-sm font-semibold transition-colors"
-          >
-            Browse All Templates
-          </a>
+          <Shield
+            label="version"
+            value="1.0.0-rc.1"
+            color="#24292f"
+            href={`${repo}/blob/main/package.json`}
+          />
+          <Shield
+            label="agent skill"
+            value="included"
+            color="#24292f"
+            href={`${repo}/tree/main/skills/pomade`}
+          />
+          <Shield
+            label="license"
+            value="MIT"
+            color="#24292f"
+            href={`${repo}/blob/main/LICENSE`}
+          />
         </div>
+        <div className="flat-badge-row resource-readme-badges">
+          <Shield
+            label="DOCS"
+            value="GET STARTED"
+            color="#0969da"
+            href="/docs"
+          />
+          <Shield
+            label="TEMPLATES"
+            value="3 STYLES"
+            color="#8250df"
+            href="#templates"
+          />
+          <Shield
+            label="WORKFLOW"
+            value="ON PUSH"
+            color="#1a7f37"
+            href="/how-it-works"
+          />
+          <Shield
+            label="BUILT BY"
+            value="GURTEJ HUNDAL"
+            color="#bf8700"
+            href="https://github.com/Gurtejhundal"
+          />
+        </div>
+      </header>
+
+      <section className="markdown-section" id="overview">
+        <h2>What is PoMade?</h2>
+        <p>
+          The code works. The README still says “coming soon.” The About is
+          empty. Nobody knows what the project does.
+        </p>
+        <p>
+          <strong>PoMade handles the last mile.</strong> It is a coding-agent
+          companion and a GitHub Action that keeps your README, real demo media,
+          About, and topics in step with the code you ship.
+        </p>
+        <blockquote>
+          A sharp one-liner. A working command. A real preview. A repo that
+          feels finished.
+        </blockquote>
       </section>
-    </div>
+
+      <section className="markdown-section" id="status">
+        <h2>Status</h2>
+        <div className="flat-badge-row status-readme-badges">
+          <a href={`${repo}/actions/workflows/ci.yml`}>
+            <img
+              src="https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg"
+              alt="Current PoMade CI status"
+              height="20"
+            />
+          </a>
+          <Shield
+            label="templates"
+            value="3 styles"
+            color="#1a7f37"
+            href="#templates"
+          />
+          <Shield
+            label="source"
+            value="release candidate"
+            color="#9a6700"
+            href={`${repo}/blob/main/package.json`}
+          />
+          <Shield
+            label="media"
+            value="SVG + GIF"
+            color="#0969da"
+            href="#demo"
+          />
+        </div>
+        <p className="markdown-note">
+          Source installation is available. Releases and npm publication are
+          separate publishing steps.
+        </p>
+      </section>
+
+      <section className="markdown-section" id="demo">
+        <h2>See it in action</h2>
+        <p>
+          Presentation is part of shipping. Here is the actual PoMade CLI
+          output, played back as a short animation.
+        </p>
+        <a href={`${repo}/blob/main/docs/media/cli-demo.gif`}>
+          <img
+            className="readme-demo"
+            src="/cli-demo.gif"
+            alt="Animated playback of PoMade's real init and sync help output"
+            width="1120"
+            height="530"
+            loading="lazy"
+          />
+        </a>
+        <p className="markdown-note">
+          <a href="/cli-demo-static.png">Static version</a> ·{' '}
+          <Link href="/studio">Try the README Studio</Link>
+        </p>
+      </section>
+
+      <section className="markdown-section" id="installation">
+        <h2>Installation</h2>
+        <p>Build from source with Node.js 22 or newer:</p>
+        <pre>
+          <code>
+            {
+              'git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link'
+            }
+          </code>
+        </pre>
+        <p>Then, inside the project you want to polish:</p>
+        <pre>
+          <code>
+            {
+              'pomade init --preset signature --approved\npomade diff\npomade apply --approved'
+            }
+          </code>
+        </pre>
+        <p>
+          <code>init</code> installs the configuration and push workflow. Review
+          the first diff, adopt managed sections once, and commit the files with
+          your code.
+        </p>
+        <p>
+          <Link href="/docs">Full command reference →</Link>
+        </p>
+      </section>
+
+      <section className="markdown-section" id="how-it-works">
+        <h2>How it works</h2>
+        <ol className="markdown-steps">
+          <li>
+            <strong>Read the project.</strong> Inspect manifests, scripts,
+            documentation, licenses, and existing media.
+          </li>
+          <li>
+            <strong>Choose the first impression.</strong> Simple, Signature, or
+            Motion. Your facts, your voice.
+          </li>
+          <li>
+            <strong>Review the diff.</strong> Inspect a saved plan before
+            applying it. Stale targets and malformed markers stop the update.
+          </li>
+          <li>
+            <strong>Push the code.</strong> The GitHub Action maintains
+            generated README sections and cover assets.
+          </li>
+          <li>
+            <strong>Keep the front door current.</strong> An optional scoped
+            token syncs About, homepage, and topics.
+          </li>
+        </ol>
+        <blockquote>
+          Handwritten text outside the managed sections stays yours.
+        </blockquote>
+        <p>
+          <Link href="/how-it-works">Workflow, permissions, and setup →</Link>
+        </p>
+      </section>
+
+      <section className="markdown-section" id="templates">
+        <h2>Three ways to introduce your project</h2>
+        <div className="markdown-table-scroll">
+          <table className="markdown-table">
+            <thead>
+              <tr>
+                <th>Simple</th>
+                <th>Signature</th>
+                <th>Motion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Quiet. Direct. Command-first.</td>
+                <td>An identity people remember.</td>
+                <td>Show the thing doing the thing.</td>
+              </tr>
+              <tr>
+                <td>Title, setup, features, usage.</td>
+                <td>Logo, one-liner, badges, real image.</td>
+                <td>Animated cover, real GIF, static alternatives.</td>
+              </tr>
+              <tr>
+                <td>
+                  <Link href="/studio?template=minimal">Use Simple →</Link>
+                </td>
+                <td>
+                  <Link href="/studio?template=signature">Use Signature →</Link>
+                </td>
+                <td>
+                  <Link href="/studio?template=animated">Use Motion →</Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Same project. Same facts. Pick a preview:</p>
+        <TemplateSwitcher />
+        <p>
+          <Link href="/templates">Explore all three templates →</Link>
+        </p>
+      </section>
+
+      <section className="markdown-section" id="agent-plugin">
+        <h2>Made for your coding agent</h2>
+        <p>
+          The included skill brings presentation into a requested commit or push
+          workflow. The Action keeps it maintained after the push.
+        </p>
+        <pre>
+          <code>{'claude --plugin-dir /absolute/path/to/PoMade'}</code>
+        </pre>
+        <p>
+          Other agents that support portable skills can install{' '}
+          <a href={`${repo}/tree/main/skills/pomade`}>
+            <code>skills/pomade</code>
+          </a>{' '}
+          with their own skill installer. Loading the skill alone does not
+          install a Git hook.
+        </p>
+      </section>
+
+      <section className="markdown-section" id="principles">
+        <h2>A little polish. No made-up proof.</h2>
+        <ul>
+          <li>
+            <strong>Real media.</strong> Screenshots come from the running
+            product. Generated covers are labeled as covers.
+          </li>
+          <li>
+            <strong>Useful badges.</strong> Live GitHub data and declared
+            project facts. No invented stars or passing builds.
+          </li>
+          <li>
+            <strong>Reviewed claims.</strong> A dependency is a dependency. A
+            configured test command is not a passing test.
+          </li>
+          <li>
+            <strong>Your writing.</strong> Generated sections are maintained.
+            Your surrounding prose is preserved.
+          </li>
+        </ul>
+        <p>
+          Structure references:{' '}
+          <a href="https://github.com/DietrichGebert/ponytail">Ponytail</a>,{' '}
+          <a href="https://github.com/ollama/ollama">Ollama</a>,{' '}
+          <a href="https://github.com/fastapi/fastapi">FastAPI</a>,{' '}
+          <a href="https://github.com/microsoft/vscode">VS Code</a>,{' '}
+          <a href="https://github.com/denoland/deno">Deno</a>, and{' '}
+          <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>.{' '}
+          <a href={`${repo}/blob/main/docs/design/REFERENCE_ANALYSIS.md`}>
+            Read the research.
+          </a>
+        </p>
+      </section>
+
+      <section className="markdown-section" id="star-history">
+        <h2>Star History</h2>
+        <StarHistory />
+      </section>
+      <section className="markdown-section" id="contributing">
+        <h2>Contributing</h2>
+        <p>
+          Have a better example, a useful template improvement, or a bug to
+          report? <a href={`${repo}/issues`}>Open an issue</a> or read the{' '}
+          <a href={`${repo}/blob/main/CONTRIBUTING.md`}>contributing guide</a>.
+        </p>
+      </section>
+      <section className="markdown-section" id="license">
+        <h2>License</h2>
+        <p>
+          <a href={`${repo}/blob/main/LICENSE`}>MIT</a> © Gurtej Hundal.
+        </p>
+      </section>
+    </article>
   );
 }

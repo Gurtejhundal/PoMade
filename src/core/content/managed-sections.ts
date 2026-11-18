@@ -7,8 +7,10 @@ export interface ParsedSection {
   rawContent: string;
 }
 
-const START_MARKER_REGEX = /<!--\s*(?:pomade|repoatelier):start\s+([a-zA-Z0-9_\-]+)\s*-->/g;
-const END_MARKER_REGEX = /<!--\s*(?:pomade|repoatelier):end\s+([a-zA-Z0-9_\-]+)\s*-->/g;
+const START_MARKER_REGEX =
+  /<!--\s*(?:pomade|repoatelier):start\s+([a-zA-Z0-9_\-]+)\s*-->/g;
+const END_MARKER_REGEX =
+  /<!--\s*(?:pomade|repoatelier):end\s+([a-zA-Z0-9_\-]+)\s*-->/g;
 
 export class ManagedSections {
   public static wrap(sectionId: string, content: string): string {
@@ -17,15 +19,13 @@ export class ManagedSections {
   }
 
   public static hasManagedSections(content: string): boolean {
-    return (
-      content.includes('<!-- pomade:start') ||
-      content.includes('<!-- repoatelier:start')
-    );
+    return /<!--\s*(?:pomade|repoatelier):(?:start|end)\b/.test(content);
   }
 
   public static parse(content: string): Map<string, ParsedSection> {
     const sections = new Map<string, ParsedSection>();
-    const startMatches: Array<{ id: string; index: number; length: number }> = [];
+    const startMatches: Array<{ id: string; index: number; length: number }> =
+      [];
 
     let match: RegExpExecArray | null;
     const startRegex = new RegExp(START_MARKER_REGEX.source, 'g');
@@ -61,11 +61,15 @@ export class ManagedSections {
 
       const matchingEnd = endMatches.find((e) => e.id === start.id);
       if (!matchingEnd) {
-        throw new Error(`Missing closing marker for managed section: '${start.id}'`);
+        throw new Error(
+          `Missing closing marker for managed section: '${start.id}'`
+        );
       }
 
       if (matchingEnd.index < start.index) {
-        throw new Error(`Closing marker appears before start marker for section: '${start.id}'`);
+        throw new Error(
+          `Closing marker appears before start marker for section: '${start.id}'`
+        );
       }
 
       const contentStart = start.index + start.length;
@@ -82,16 +86,28 @@ export class ManagedSections {
       });
     }
 
+    const ordered = Array.from(sections.values()).sort(
+      (a, b) => a.startMarkerIndex - b.startMarkerIndex
+    );
+    for (let i = 1; i < ordered.length; i++) {
+      if (ordered[i].startMarkerIndex < ordered[i - 1].endMarkerIndex) {
+        throw new Error('Managed sections must not overlap or nest.');
+      }
+    }
     return sections;
   }
 
-  public static replaceSection(content: string, sectionId: string, newContent: string): string {
+  public static replaceSection(
+    content: string,
+    sectionId: string,
+    newContent: string
+  ): string {
     const sections = this.parse(content);
     const existing = sections.get(sectionId);
 
     if (!existing) {
       // Append section to bottom
-      return `${content.trimEnd()}\n\n${this.wrap(sectionId, newContent)}\n`;
+      return `${content}\n\n${this.wrap(sectionId, newContent)}\n`;
     }
 
     const before = content.substring(0, existing.contentStartIndex);
@@ -115,13 +131,25 @@ export class ManagedSections {
         const before = result.substring(0, sec.contentStartIndex);
         const after = result.substring(sec.contentEndIndex);
         result = `${before}\n${replacement.trim()}\n${after}`;
+      } else if (
+        [
+          'preview',
+          'architecture',
+          'development',
+          'status',
+          'maintenance',
+        ].includes(sec.id)
+      ) {
+        result =
+          result.substring(0, sec.startMarkerIndex) +
+          result.substring(sec.endMarkerIndex);
       }
     }
 
     // Append any new sections that didn't exist before
     for (const [id, secContent] of Object.entries(sectionMap)) {
       if (!sections.some((s) => s.id === id)) {
-        result = `${result.trimEnd()}\n\n${this.wrap(id, secContent)}\n`;
+        result = `${result}\n\n${this.wrap(id, secContent)}\n`;
       }
     }
 

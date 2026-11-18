@@ -1,192 +1,143 @@
 <!-- pomade:start header -->
-# Pomade
+<p align="center"><img src="docs/media/pomade-mascot.png" alt="PoMade logo" width="100" /></p>
 
-> **Make every repo worth opening.**  
-> Agent-native GitHub repository presentation, packaging, and maintenance layer.
+<h1 align="center">PoMade</h1>
 
-<p align="center">
-  <img src="docs/media/social-preview.svg" alt="Pomade banner" width="800" />
-</p>
+<p align="center"><em>Code pushed. First impression handled.</em></p>
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
-  <img src="https://img.shields.io/badge/version-v1.0.0--rc.1-informational.svg" alt="Version: 1.0.0-rc.1" />
-  <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-success.svg" alt="Node: >=18.0.0" />
-  <img src="https://img.shields.io/badge/stage-maintained-orange.svg" alt="Stage: Maintained" />
-  <a href=".github/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen.svg" alt="CI Status" /></a>
-</p>
+![Manifest version](https://img.shields.io/badge/version-1.0.0--rc.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/PoMade/actions)
+
+[Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/PoMade)
+
+<p align="center"><img src="docs/media/pomade-motion.svg" alt="PoMade animated cover" width="800" /></p>
+
+[View the static cover](docs/media/pomade-static.svg)
 <!-- pomade:end header -->
 
 <!-- pomade:start overview -->
 ## Overview
 
-**Pomade** equips AI coding agents and developers to audit, create, polish, and maintain truthful, professional GitHub repositories.
-
-Rather than synthesizing speculative READMEs or fabricating benchmarks, Pomade strictly projects documentation and metadata from verifiable codebase evidence.
-
-### Core Invariants
-
-1. **Evidence-backed projection**: Never invents features, commands, performance claims, or fake stars. Every statement in generated documentation links to an observed manifest, test script, entry point, or source interface.
-2. **Deterministic safety & approval gates**: Never overwrites existing user content without explicit confirmation (`--approved`) and target content-hash verification.
-3. **Remote protection**: Never pushes to remotes, creates releases, or modifies repository settings without dedicated remote confirmation (`--approved-remote`).
-4. **Agent-first & human-friendly**: Functions interchangeably as an interactive CLI or a standard AI coding-agent skill (`SKILL.md`).
+The repository presentation companion for coding agents. Keep your README, real media, GitHub About, and topics in step with the code you ship.
 <!-- pomade:end overview -->
+
+<!-- pomade:start preview -->
+## See it in action
+
+<p align="center"><img src="docs/media/cli-demo.gif" alt="PoMade demonstration" width="800" /></p>
+
+[View the static demo](docs/media/cli-demo-static.png)
+<!-- pomade:end preview -->
 
 <!-- pomade:start quickstart -->
 ## Quickstart
 
-### Prerequisites
-
-- Node.js LTS (>= 18.0.0)
-- npm, pnpm, or bun
-
-### Global Installation
-
-```bash
-npm install -g pomade
-```
-
-### Local Development Setup
-
 ```bash
 git clone https://github.com/Gurtejhundal/PoMade.git
 cd PoMade
-npm install
+npm ci
 npm run build
-npm test
+npm link
 ```
 <!-- pomade:end quickstart -->
 
 <!-- pomade:start features -->
 ## Features
 
-- **Multi-Manifest Discovery**: Scans Node, Python, Rust, and Go manifests, frameworks, licenses, existing documentation, and git state.
-- **Stage-Aware Quality Rubric**: Evaluates repos across 5 pillars (Clarity, First-Run, Trust, Discoverability, Maintenance) with lenient rules for early experiments and strict standards for production packages.
-- **Managed Sections Preserving Human Edits**: Modifies only `<!-- pomade:start <id> --> ... <!-- pomade:end <id> -->` blocks; hand-crafted prose outside markers is guaranteed untouched.
-- **Documentation Drift Detection**: Flags discrepancies when package scripts, dependencies, or interfaces change but docs lag behind.
-- **Visual Asset Generation**: Produces compliant 1280x640 GitHub social preview cards, responsive dark-mode vector SVG diagrams, and real UI screenshot capture plans.
-- **GitHub & Release Automation**: Prepares repository topics, concise descriptions, issue templates, PR templates, semver bumps, and changelog drafts.
-- **Commander CLI Framework**: High-performance, modular CLI command structure built with Commander.
-- **Vitest Testing Architecture**: Rigorous, verified unit and integration test coverage powered by Vitest.
+- **Three README styles** — Simple for a clear first run, Signature for a distinct identity, and Motion for an animated cover and real demo media.
+- **Polish after a push** — A GitHub Action maintains marked README sections and cover assets on pushes to main. Text outside managed sections stays yours.
+- **The whole front door** — Configure a concise About, homepage, and curated topics. Sync metadata with an administration-scoped token while preserving existing topics.
+- **A coding-agent companion** — The bundled skill includes presentation in requested commit and push workflows. A Claude Code plugin manifest is included.
+- **Preview before writing** — Review a saved plan with target hashes, then apply that exact plan. Stale targets, escaping paths, and malformed markers are rejected.
 <!-- pomade:end features -->
 
 <!-- pomade:start usage -->
-## CLI Command Reference
-
-### 1. Repository Inspection & Quality Audits
+## Usage
 
 ```bash
-# Scan repository structure, manifests, and git state (read-only)
-pomade scan
-
-# Perform a comprehensive quality audit with category breakdown
-pomade audit
-
-# Enforce a minimum passing score (e.g. for CI pipelines)
-pomade audit --min-score 70
-```
-
-### 2. Documentation Planning & Safe Application
-
-```bash
-# Preview proposed changes using presets: minimal | studio | maintainer
-pomade plan --preset studio
-
-# Review standard unified diffs before writing any files
-pomade diff --preset studio
-
-# Apply approved plan atomically
-pomade apply --preset studio --approved
-
-# Simulate writes safely
-pomade apply --preset studio --approved --dry-run
-```
-
-### 3. Drift Detection
-
-```bash
-# Check if documentation is synchronized with current manifests & scripts
-pomade drift
-
-# Fail with non-zero exit code if documentation drift is detected
-pomade drift --fail-on-drift
-```
-
-### 4. Media & Visual Assets
-
-```bash
-# Detect UI and generate an evidence-backed capture plan
-pomade media plan
-
-# Generate a responsive SVG architecture diagram
-pomade media generate-diagram --output docs/media/architecture.svg
-
-# Generate a 1280x640 GitHub social preview card
-pomade media generate-card --output docs/media/social-preview.svg
-```
-
-### 5. GitHub & Community Health Files
-
-```bash
-# Recommend evidence-backed description and topics
-pomade github plan
-
-# Initialize bug report, feature request, PR templates, and CONTRIBUTING.md
-pomade github init-community --approved --license MIT --author "Your Name"
-
-# Update remote GitHub repository settings via GitHub CLI (requires approval)
-pomade github apply --approved-remote
-```
-
-### 6. Release Management
-
-```bash
-# Inspect commit history and prepare semantic version bump and changelog draft
-pomade release plan
+# Run inside the repository you want to polish
+pomade init --preset signature --approved
+pomade diff
+pomade apply --approved
 ```
 <!-- pomade:end usage -->
-
-<!-- pomade:start status -->
-## Current Status
-
-**v1.0.0-rc.1 — Production Release Candidate**.
-
-- 100% test pass rate (83/83 unit and integration tests).
-- Cross-platform support (Linux, macOS, Windows).
-- Complete agent skill specification included in [`skills/pomade/SKILL.md`](skills/pomade/SKILL.md).
-<!-- pomade:end status -->
 
 <!-- pomade:start architecture -->
 ## Architecture
 
 ```mermaid
-graph TD
-  Agent([AI Coding Agent / User]) --> CLI[Pomade CLI]
-  CLI --> Scanner[Repository Scanner]
-  Scanner --> SafeFS[SafeFileSystem Guard]
-  Scanner --> GitAdapter[Git CLI Adapter]
-
-  Scanner --> Ledger[Evidence Ledger]
-  Ledger --> Audit[Audit Engine]
-  Ledger --> ContentAuthor[Evidence Content Author]
-
-  ContentAuthor --> DiffEngine[Unified Diff Engine]
-  DiffEngine --> Planner[Planner]
-  Planner --> PolicyGuard[Policy Guard]
-  PolicyGuard --> Applier[Plan Applier]
-
-  Applier --> ManagedSections[Managed Sections Parser]
-  Applier --> MediaOrganizer[Media Organizer]
-  Applier --> GitHubAdapter[GitHub CLI Adapter]
+flowchart LR
+  Repository --> Manifest0["package.json"]
+  Repository --> Manifest1["site/package.json"]
 ```
-
-<p align="center">
-  <img src="docs/media/architecture.svg" alt="Architecture Diagram" width="800" />
-</p>
 <!-- pomade:end architecture -->
+
+<!-- pomade:start development -->
+## Development
+
+Configured test command (its presence does not imply tests pass):
+
+```bash
+npm test
+```
+<!-- pomade:end development -->
 
 <!-- pomade:start license -->
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)
 <!-- pomade:end license -->
+
+## Choose your first impression
+
+| Simple | Signature | Motion |
+| --- | --- | --- |
+| Quiet, direct, command-first. | A distinct identity and a real product image. | Animated cover, real demo, static alternatives. |
+| [See the README](docs/templates/SIMPLE.md) | [See the README](docs/templates/SIGNATURE.md) | [See the README](docs/templates/MOTION.md) |
+
+## The README Studio
+
+A real capture of the local PoMade website. The Studio edits project facts, previews Markdown and diffs, and exports a repository kit with its media files.
+
+![PoMade README-style website](docs/media/site-preview.png)
+
+[Open the website](https://pomade-swart.vercel.app) · [Mobile capture](docs/media/site-mobile.png) · [Design research](docs/design/REFERENCE_ANALYSIS.md)
+
+## Keep it polished on pushes
+
+`pomade init` installs `.pomade.json` and a GitHub Action that maintains generated sections on pushes to `main`. Review the first diff and adopt managed markers once. Add the repository secret **POMADE_TOKEN** with **Administration: write** to enable About/topics updates; generated file commits use the normal workflow token.
+
+```bash
+# Preview the maintenance run
+pomade sync --approved --dry-run
+
+# Review once, apply that exact plan
+pomade plan --output /tmp/pomade-plan.json
+pomade apply --plan /tmp/pomade-plan.json --approved
+```
+
+[Setup, permissions, and branch-protection details](docs/PUSH_WORKFLOW.md).
+
+## Agent plugin
+
+The portable skill lives in [`skills/pomade`](skills/pomade/SKILL.md). The Claude Code plugin can be loaded from a local checkout:
+
+```bash
+claude --plugin-dir /absolute/path/to/PoMade
+```
+
+The skill includes presentation when preparing a requested push. The GitHub Action handles maintenance after the push. Installing the skill alone does not create a Git hook.
+
+## Development and status
+
+Source release candidate: `1.0.0-rc.1`. The website and CLI are separate build targets. Development/tests and the Action use Node.js 22 or newer; the website requires Node.js 20.9 or newer. CLI runtime metadata still permits Node.js 18 or newer. Source installation is documented above; npm publication and release creation are separate operations.
+
+```bash
+npm test
+npm run typecheck
+npm run build
+npm run site:build
+```
+
+The terminal GIF is typeset playback of actual captured CLI stdout, not a screen recording. Owner-authored claims need review. Scanning a script does not establish that it passes.
+
+[Audit and verification report](docs/audit/2026-11-18.md).

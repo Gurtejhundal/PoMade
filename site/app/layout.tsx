@@ -4,10 +4,10 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pomade.dev'),
+  metadataBase: new URL('https://pomade-swart.vercel.app'),
   title: 'Pomade — Make every repo worth opening',
   description:
-    'He doesn’t write your code. He makes sure it looks finished. The agent-native GitHub repository presentation, packaging, and maintenance engine.',
+    'Code pushed. First impression handled. Three README styles, a coding-agent skill, and a push workflow for repository presentation.',
   icons: {
     icon: '/pomade-mascot.png',
   },
@@ -42,7 +42,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col justify-between selection:bg-copper-500/20 selection:text-copper-700 dark:selection:bg-amberGold-500/20 dark:selection:text-amberGold-300">
+      <body>
         <div>
           <Header />
           <main>{children}</main>

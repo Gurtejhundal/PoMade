@@ -1,0 +1,58 @@
+name: PoMade repository polish
+description: Refresh managed README sections, motion assets, and GitHub metadata after a push.
+author: Gurtej Hundal
+branding:
+  icon: book-open
+  color: orange
+inputs:
+  path:
+    description: Repository directory, relative to the workspace
+    default: '.'
+  metadata-token:
+    description: Optional fine-grained token with repository Administration write permission for About and topics
+    required: false
+  commit:
+    description: Commit and push generated README and covers
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Build PoMade
+      shell: bash
+      env:
+        POMADE_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        npm ci --prefix "$POMADE_ACTION_PATH" --ignore-scripts
+        npm run build --prefix "$POMADE_ACTION_PATH"
+    - name: Refresh presentation
+      shell: bash
+      env:
+        POMADE_ACTION_PATH: ${{ github.action_path }}
+        POMADE_TARGET: ${{ inputs.path }}
+        GH_TOKEN: ${{ inputs.metadata-token }}
+      run: |
+        args=(--approved)
+        if [ -n "$GH_TOKEN" ]; then
+          args+=(--approved-remote)
+        else
+          echo '::notice::About/topics sync skipped. Add POMADE_TOKEN with Administration write permission to enable it.'
+        fi
+        node "$POMADE_ACTION_PATH/dist/cli/bin.js" sync "$POMADE_TARGET" "${args[@]}"
+    - name: Commit presentation changes
+      if: inputs.commit == 'true'
+      shell: bash
+      env:
+        POMADE_TARGET: ${{ inputs.path }}
+      run: |
+        cd "$POMADE_TARGET"
+        files=(README.md)
+        for asset in docs/media/pomade-motion.svg docs/media/pomade-static.svg; do
+          if [ -f "$asset" ]; then files+=("$asset"); fi
+        done
+        git add -- "${files[@]}"
+        if git diff --cached --quiet -- "${files[@]}"; then exit 0; fi
+        git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit --only -m 'docs: refresh repository presentation' -- "${files[@]}"
+        git push

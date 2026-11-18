@@ -15,20 +15,40 @@ export class UnifiedDiff {
       return '';
     }
 
-    const origLines = originalContent ? originalContent.split('\n') : [];
-    const propLines = proposedContent ? proposedContent.split('\n') : [];
+    const origLines = originalContent
+      ? originalContent.replace(/\n$/, '').split('\n')
+      : [];
+    const propLines = proposedContent
+      ? proposedContent.replace(/\n$/, '').split('\n')
+      : [];
 
     const diffLines: string[] = [];
     diffLines.push(`--- a/${filename}`);
     diffLines.push(`+++ b/${filename}`);
 
+    const addFullLines = (lines: string[], prefix: string, content: string) => {
+      for (const line of lines) diffLines.push(prefix + line);
+      if (lines.length && !content.endsWith('\n'))
+        diffLines.push('\\ No newline at end of file');
+    };
+    // Bound memory for large READMEs; a complete replacement is still an applicable unified diff.
+    if (
+      origLines.length * propLines.length > 1_000_000 ||
+      originalContent.endsWith('\n') !== proposedContent.endsWith('\n')
+    ) {
+      diffLines.push(
+        `@@ -${origLines.length ? 1 : 0},${origLines.length} +${propLines.length ? 1 : 0},${propLines.length} @@`
+      );
+      addFullLines(origLines, '-', originalContent);
+      addFullLines(propLines, '+', proposedContent);
+      return diffLines.join('\n') + '\n';
+    }
+
     if (origLines.length === 0) {
       // New file
       diffLines.push(`@@ -0,0 +1,${propLines.length} @@`);
-      for (const line of propLines) {
-        diffLines.push(`+${line}`);
-      }
-      return diffLines.join('\n');
+      addFullLines(propLines, '+', proposedContent);
+      return diffLines.join('\n') + '\n';
     }
 
     // Standard Myers / LCS diff or simple line-by-line chunking
@@ -41,7 +61,11 @@ export class UnifiedDiff {
     const hunks: Array<{ type: 'same' | 'add' | 'del'; line: string }> = [];
 
     while (i < origLines.length || j < propLines.length) {
-      if (i < origLines.length && j < propLines.length && origLines[i] === propLines[j]) {
+      if (
+        i < origLines.length &&
+        j < propLines.length &&
+        origLines[i] === propLines[j]
+      ) {
         hunks.push({ type: 'same', line: origLines[i] });
         i++;
         j++;
@@ -62,20 +86,32 @@ export class UnifiedDiff {
     for (const h of hunks) {
       if (h.type === 'same') {
         diffLines.push(` ${h.line}`);
+        if (origIndex === origLines.length && !originalContent.endsWith('\n'))
+          diffLines.push('\\ No newline at end of file');
+        origIndex++;
+        propIndex++;
       } else if (h.type === 'add') {
         diffLines.push(`+${h.line}`);
+        if (propIndex === propLines.length && !proposedContent.endsWith('\n'))
+          diffLines.push('\\ No newline at end of file');
+        propIndex++;
       } else if (h.type === 'del') {
         diffLines.push(`-${h.line}`);
+        if (origIndex === origLines.length && !originalContent.endsWith('\n'))
+          diffLines.push('\\ No newline at end of file');
+        origIndex++;
       }
     }
 
-    return diffLines.join('\n');
+    return diffLines.join('\n') + '\n';
   }
 
   private static computeLcs(a: string[], b: string[]): number[][] {
     const m = a.length;
     const n = b.length;
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    const dp: number[][] = Array.from({ length: m + 1 }, () =>
+      Array(n + 1).fill(0)
+    );
 
     for (let i = m - 1; i >= 0; i--) {
       for (let j = n - 1; j >= 0; j--) {

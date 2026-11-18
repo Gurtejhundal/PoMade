@@ -29,7 +29,7 @@ describe('ContentAuthor', () => {
     const author = new ContentAuthor(snapshot, { preset: 'studio' });
     const readme = author.generateReadme();
 
-    expect(readme).toContain('# sample-web-dashboard');
+    expect(readme).toContain('<h1 align="center">sample-web-dashboard</h1>');
     expect(readme).toContain('```mermaid');
     expect(readme).toContain('Next.js');
     expect(readme).toContain('Tailwind CSS');

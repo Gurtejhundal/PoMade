@@ -1,10 +1,13 @@
 import type { RepositorySnapshot } from '../types/schemas.js';
 
 export class SvgGenerator {
-  public static generateArchitectureDiagram(snapshot: RepositorySnapshot): string {
+  public static generateArchitectureDiagram(
+    snapshot: RepositorySnapshot
+  ): string {
     const name = snapshot.manifests[0]?.name ?? 'Project';
     const kind = snapshot.kind.toUpperCase();
-    const frameworks = snapshot.frameworks.slice(0, 3).join(', ') || 'Core Modules';
+    const frameworks =
+      snapshot.frameworks.slice(0, 3).join(', ') || 'Core Modules';
     const lang = snapshot.primaryLanguage ?? 'Code';
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="100%" height="100%">
@@ -62,7 +65,7 @@ export class SvgGenerator {
     <text x="105" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="17" font-weight="700" fill="#ffffff">${escapeXml(name)}</text>
     <text x="105" y="96" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#cbd5e1">${escapeXml(lang)} Engine</text>
     <line x1="25" y1="112" x2="185" y2="112" stroke="#475569" stroke-width="1" />
-    <text x="105" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">Verified Logic &amp; Routing</text>
+    <text x="105" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">Declared project configuration</text>
   </g>
 
   <!-- Flow Arrow 2 -->
@@ -90,10 +93,11 @@ export class SvgGenerator {
 
   public static generateSocialCard(snapshot: RepositorySnapshot): string {
     const name = snapshot.manifests[0]?.name ?? 'Project';
-    const desc = snapshot.manifests[0]?.description ?? 'A verified, maintainable GitHub repository.';
+    const desc =
+      snapshot.manifests[0]?.description ?? 'Repository presentation.';
     const kind = snapshot.kind.toUpperCase();
-    const lang = snapshot.primaryLanguage ?? 'TypeScript';
-    const license = snapshot.license?.spdxId ?? 'Proprietary';
+    const lang = snapshot.primaryLanguage ?? 'Unknown';
+    const license = snapshot.license?.spdxId ?? 'Undeclared';
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
   <title>${escapeXml(name)} — GitHub Social Preview</title>
@@ -154,7 +158,7 @@ export class SvgGenerator {
     <!-- Bottom Metadata -->
     <g transform="translate(0, 310)">
       <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#64748b">
-        VERIFIED REPOSITORY • EVIDENCE-BACKED
+        REPOSITORY PRESENTATION
       </text>
     </g>
   </g>

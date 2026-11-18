@@ -1,0 +1,45 @@
+{
+  "preset": "animated",
+  "name": "PoMade",
+  "tagline": "Code pushed. First impression handled.",
+  "description": "The repository presentation companion for coding agents. Keep your README, real media, GitHub About, and topics in step with the code you ship.",
+  "topics": [
+    "agent-skills",
+    "ai-agents",
+    "github-actions",
+    "readme",
+    "documentation",
+    "developer-tools",
+    "typescript",
+    "repository-presentation"
+  ],
+  "logo": "docs/media/pomade-mascot.png",
+  "screenshot": "docs/media/site-preview.png",
+  "installCommand": "git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link",
+  "runCommand": "# Run inside the repository you want to polish\npomade init --preset signature --approved\npomade diff\npomade apply --approved",
+  "features": [
+    {
+      "title": "Three README styles",
+      "description": "Simple for a clear first run, Signature for a distinct identity, and Motion for an animated cover and real demo media."
+    },
+    {
+      "title": "Polish after a push",
+      "description": "A GitHub Action maintains marked README sections and cover assets on pushes to main. Text outside managed sections stays yours."
+    },
+    {
+      "title": "The whole front door",
+      "description": "Configure a concise About, homepage, and curated topics. Sync metadata with an administration-scoped token while preserving existing topics."
+    },
+    {
+      "title": "A coding-agent companion",
+      "description": "The bundled skill includes presentation in requested commit and push workflows. A Claude Code plugin manifest is included."
+    },
+    {
+      "title": "Preview before writing",
+      "description": "Review a saved plan with target hashes, then apply that exact plan. Stale targets, escaping paths, and malformed markers are rejected."
+    }
+  ],
+  "demo": "docs/media/cli-demo.gif",
+  "demoPoster": "docs/media/cli-demo-static.png",
+  "homepage": "https://pomade-swart.vercel.app"
+}
