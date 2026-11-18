@@ -10,14 +10,14 @@ export const metadata: Metadata = {
     template: '%s',
   },
   description:
-    'Code pushed. First impression handled. Three README styles, a coding-agent skill, and a push workflow for repository presentation.',
+    'Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.',
   icons: {
     icon: '/pomade-mascot.png',
   },
   openGraph: {
     title: 'PoMade — Code pushed. First impression handled.',
     description:
-      'The agent-native repository presentation and maintenance layer. Creating polished READMEs, diagrams, and metadata from verifiable code evidence.',
+      'Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.',
     images: ['/social-preview.svg'],
   },
 };

@@ -2,7 +2,7 @@
   "preset": "animated",
   "name": "PoMade",
   "tagline": "Code pushed. First impression handled.",
-  "description": "The repository presentation companion for coding agents. Keep your README, real media, GitHub About, and topics in step with the code you ship.",
+  "description": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
   "topics": [
     "agent-skills",
     "ai-agents",

@@ -17,7 +17,7 @@
 <!-- pomade:start overview -->
 ## Overview
 
-The repository presentation companion for coding agents. Keep your README, real media, GitHub About, and topics in step with the code you ship.
+Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.
 <!-- pomade:end overview -->
 
 <!-- pomade:start preview -->

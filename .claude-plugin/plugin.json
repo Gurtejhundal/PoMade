@@ -1,7 +1,7 @@
 {
   "name": "pomade",
   "version": "1.0.0",
-  "description": "Code pushed. First impression handled. Maintain README, real media, About, and topics with a coding-agent skill and GitHub Action.",
+  "description": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
   "author": {
     "name": "Gurtej Hundal",
     "url": "https://github.com/Gurtejhundal"

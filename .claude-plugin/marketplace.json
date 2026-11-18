@@ -7,7 +7,7 @@
     {
       "name": "pomade",
       "source": "./",
-      "description": "Keep README, real media, About, and topics in step with the code you push.",
+      "description": "Repository polish on every push.",
       "version": "1.0.0"
     }
   ],

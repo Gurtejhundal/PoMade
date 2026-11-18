@@ -1,6 +1,6 @@
 ---
 name: pomade
-description: Maintain a repository's first impression when preparing a commit or git push, shipping a feature, refreshing README/media, or configuring GitHub About and topics. Inspect real project facts, choose Simple, Signature, or Motion, review a concrete diff, and keep presentation synchronized with code.
+description: Repository polish on every push. Maintain a repository's first impression when preparing a commit or git push, shipping a feature, refreshing README/media, or configuring GitHub About and topics. Inspect real project facts, choose Simple, Signature, or Motion, review a concrete diff, and keep presentation synchronized with code.
 metadata:
   compatibility: Coding agents with terminal access and the locally built PoMade CLI; GitHub Actions handles maintenance after pushes.
 ---

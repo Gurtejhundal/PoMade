@@ -3,7 +3,7 @@ export const POMADE_SAMPLE: PresentationFacts = {
   name: 'PoMade',
   tagline: 'Code pushed. First impression handled.',
   description:
-    'A repository presentation companion for coding agents. Keep your README, real media, About, and topics in step with the code you ship.',
+    'Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.',
   repositoryUrl: 'https://github.com/Gurtejhundal/PoMade',
   installCommand:
     'git clone https://github.com/Gurtejhundal/PoMade.git\ncd PoMade\nnpm ci\nnpm run build\nnpm link',

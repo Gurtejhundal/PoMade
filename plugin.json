@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pomade",
   "version": "1.0.0",
-  "description": "Keep README, real media, About, and topics in step with the code you push.",
+  "description": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
   "author": {
     "name": "Gurtej Hundal",
     "url": "https://github.com/Gurtejhundal"
@@ -20,8 +20,8 @@
       "hooks": "./hooks/hooks.json",
       "interface": {
         "displayName": "PoMade",
-        "shortDescription": "Code pushed. First impression handled.",
-        "longDescription": "Inspect repository facts, choose one of three README styles, review changes, and maintain the presentation on pushes. Includes optional local hooks.",
+        "shortDescription": "Repository polish on every push.",
+        "longDescription": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
         "developerName": "Gurtej Hundal",
         "category": "Developer Tools",
         "capabilities": [
