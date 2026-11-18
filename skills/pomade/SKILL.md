@@ -14,7 +14,7 @@ Treat the README, real product media, About, and topics as part of shipping. Act
 ## Workflow
 
 1. Inspect `git diff`, the manifests, and existing README. Run `pomade scan` and `pomade audit` inside the target repository.
-2. Read `.pomade.json` if present. Otherwise propose one of three styles:
+2. Read `.pomade.json` and the target repository’s workflows. A plugin installed in the agent is not repository setup: check whether this repository has its own config and maintenance workflow. For an authorized first-time presentation setup, create the missing config/workflow, or use metadata-only maintenance when its existing README should remain hand-authored. Choose one of three styles:
    - `minimal` / **Simple**: clear title, short pitch, useful commands.
    - `signature` / **Signature**: centered identity, concise badges, real product image.
    - `animated` / **Motion**: animated SVG cover, real GIF recording when available, static alternative.
@@ -23,7 +23,8 @@ Treat the README, real product media, About, and topics as part of shipping. Act
 5. Run `pomade plan --output <temporary-plan-file>` and review its diffs. For a first-time setup, `pomade init --preset signature --approved` creates config and the push workflow. It never overwrites existing setup files.
 6. If the user's task already authorizes repository edits or the push, finish the requested presentation changes without another permission round. Otherwise present the concrete diff for approval before writing. Apply the exact saved plan with `pomade apply --plan <temporary-plan-file> --approved`. Do not commit the temporary plan; it contains local paths and proposed content.
 7. Before a requested push, include reviewed README, media, config, and workflow changes with the code. Never force-push, fabricate a release, or stage unrelated work. Do not create a release unless requested.
-8. After installation, the GitHub Action refreshes managed README sections and covers on pushes. It refuses unmarked existing READMEs and corrupt markers. Text outside markers is preserved. Remote About/topics updates require `POMADE_TOKEN` with repository Administration write permission. The normal workflow token handles generated file commits. Existing topics are preserved.
+8. Verify the front door separately from the Git push. Inspect the actual target repository’s About and topics after an authorized metadata update or Action run. A successful push is not proof that metadata changed. Use `pomade github plan` and `pomade github apply --approved-remote` for metadata-only updates; these read the reviewed description/topics/homepage from `.pomade.json` without rewriting the README. Each target repository needs its own authorized GitHub access: a secret saved in the PoMade repository is not available in another repository. If the needed token or workflow is missing, report About/topics as blocked with the exact target repository and setup step. Do not claim presentation is complete.
+9. After installation, the GitHub Action refreshes managed README sections and covers on pushes. It refuses unmarked existing READMEs and corrupt markers. Text outside markers is preserved. Remote About/topics updates require `POMADE_TOKEN` with repository Administration write permission. The normal workflow token handles generated file commits. Existing topics are preserved.
 
 ## Commands
 

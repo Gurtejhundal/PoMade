@@ -18,7 +18,7 @@ import { UnifiedDiff } from '../core/diff/unified-diff.js';
 import { PlanSchema } from '../core/types/schemas.js';
 import { PUSH_WORKFLOW } from '../core/sync/workflow.js';
 import { syncPresentation } from '../core/sync/sync.js';
-import { PresentationConfigSchema } from '../core/content/config.js';
+import { PresentationConfigSchema, readPresentationConfig } from '../core/content/config.js';
 import type { Preset, Plan, Action } from '../core/types/schemas.js';
 import {
   formatScanText,
@@ -415,7 +415,8 @@ export async function runGitHubPlan(
     const scanner = new RepositoryScanner(resolvedPath);
     const snapshot = await scanner.scan();
 
-    const plan = GitHubMetadataPlanner.plan(snapshot);
+    const config = await readPresentationConfig(new SafeFileSystem(resolvedPath));
+    const plan = GitHubMetadataPlanner.plan(snapshot, config);
 
     if (options?.json) {
       console.log(JSON.stringify(plan, null, 2));
@@ -439,7 +440,8 @@ export async function runGitHubApply(
     const scanner = new RepositoryScanner(resolvedPath);
     const snapshot = await scanner.scan();
 
-    const plan = GitHubMetadataPlanner.plan(snapshot);
+    const config = await readPresentationConfig(new SafeFileSystem(resolvedPath));
+    const plan = GitHubMetadataPlanner.plan(snapshot, config);
     const adapter = new GitHubAdapter(resolvedPath);
 
     const result = await adapter.updateMetadata(plan, {

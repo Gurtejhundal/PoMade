@@ -1,4 +1,5 @@
 import type { RepositorySnapshot } from '../types/schemas.js';
+import type { PresentationConfig } from '../content/config.js';
 
 export interface GitHubMetadataPlan {
   currentDescription?: string;
@@ -11,7 +12,7 @@ export interface GitHubMetadataPlan {
 }
 
 export class GitHubMetadataPlanner {
-  public static plan(snapshot: RepositorySnapshot): GitHubMetadataPlan {
+  public static plan(snapshot: RepositorySnapshot, config?: PresentationConfig): GitHubMetadataPlan {
     const manifest = snapshot.manifests[0];
     const name = manifest?.name ?? 'project';
     const rawDesc =
@@ -26,6 +27,7 @@ export class GitHubMetadataPlanner {
     if (proposedDescription.length > 100) {
       proposedDescription = proposedDescription.slice(0, 97) + '...';
     }
+    if (config?.description) proposedDescription = config.description;
 
     // Determine evidence-backed topics (3-8 topics)
     const topicSet = new Set<string>();
@@ -68,7 +70,7 @@ export class GitHubMetadataPlanner {
         .slice(0, 50);
       if (topic) topicSet.add(topic);
     }
-    const proposedTopics = Array.from(topicSet).slice(0, 20);
+    const proposedTopics = config?.topics ?? Array.from(topicSet).slice(0, 20);
 
     // Build command preview for gh repo edit
     const topicFlags = proposedTopics.map((t) => `--add-topic ${t}`).join(' ');
@@ -79,13 +81,15 @@ export class GitHubMetadataPlanner {
         )
       : 'OWNER/REPO';
 
-    const commandPreview = `gh repo edit ${repoSlug} --description ${JSON.stringify(proposedDescription).replace(/[$`]/g, '\\$&')} ${topicFlags}`;
+    const quote = (value: string) => JSON.stringify(value).replace(/[$`]/g, '\\$&');
+    const commandPreview = `gh repo edit ${repoSlug} --description ${quote(proposedDescription)} ${topicFlags}${config?.homepage ? ` --homepage ${quote(config.homepage)}` : ''}`;
 
     return {
       currentDescription: manifest?.description,
       proposedDescription,
       currentTopics: [],
       proposedTopics,
+      suggestedHomepage: config?.homepage,
       evidence: [
         manifest
           ? `manifest:${manifest.manifestType}:${manifest.path}`

@@ -34,11 +34,7 @@ export async function syncPresentation(
   const result = await new PlanApplier(plan).apply(options);
   let metadata;
   if (options.approvedRemote) {
-    const remotePlan = GitHubMetadataPlanner.plan(snapshot);
-    if (config?.description)
-      remotePlan.proposedDescription = config.description;
-    if (config?.topics) remotePlan.proposedTopics = config.topics;
-    if (config?.homepage) remotePlan.suggestedHomepage = config.homepage;
+    const remotePlan = GitHubMetadataPlanner.plan(snapshot, config);
     metadata = await new GitHubAdapter(root).updateMetadata(remotePlan, {
       approvedRemote: true,
       dryRun: options.dryRun,

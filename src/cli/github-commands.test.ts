@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
@@ -32,6 +32,25 @@ describe('GitHub & Release CLI commands', () => {
 
   afterEach(async () => {
     await fs.rm(tempDir, { recursive: true, force: true });
+    vi.restoreAllMocks();
+  });
+
+  it('uses the reviewed config in metadata plans and apply previews without rewriting a manual README', async () => {
+    const description = 'A specific, reviewed pitch that is deliberately longer than one hundred characters. It explains the actual product clearly.';
+    const topics = ['creator-tools', 'youtube'];
+    await fs.writeFile(path.join(tempDir, '.pomade.json'), JSON.stringify({ preset:'signature', description, topics, homepage:'https://example.com' }));
+    await fs.writeFile(path.join(tempDir, 'README.md'), '# Owner-written README\n');
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    expect(await runGitHubPlan(tempDir, {json:true})).toBe(0);
+    const plan = JSON.parse(log.mock.calls.at(-1)![0]);
+    expect(plan.proposedDescription).toBe(description);
+    expect(plan.proposedTopics).toEqual(topics);
+    expect(plan.suggestedHomepage).toBe('https://example.com');
+    expect(await runGitHubApply(tempDir, {approvedRemote:true,dryRun:true,json:true})).toBe(0);
+    const result = JSON.parse(log.mock.calls.at(-1)![0]);
+    expect(result.executedCommand).toContain(description);
+    expect(result.executedCommand).toContain('--homepage');
+    expect(await fs.readFile(path.join(tempDir, 'README.md'),'utf8')).toBe('# Owner-written README\n');
   });
 
   it('runs pomade github plan successfully', async () => {

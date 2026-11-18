@@ -78,3 +78,11 @@ Bundled agent hooks add context at session start and before shell git push calls
 `pomade hooks status` reports installation. `pomade hooks uninstall --approved` removes only the exact managed hook. Existing hooks and custom core.hooksPath settings are preserved; add `pomade hooks check` to an existing hook manager instead. Hooks are local per clone and can be bypassed by Git, so they do not replace the after-push Action.
 
 Codex installation: `codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.1`, then `codex plugin add pomade@pomade`. Open a new chat or restart, select PoMade, and review/trust its hooks. This repository marketplace is distinct from public-directory approval.
+
+## Existing README, metadata-only maintenance
+
+An installed agent plugin is not target-repository setup. Each repository needs its own reviewed `.pomade.json` and authorized metadata credentials. A repository secret in PoMade is not shared with Clira or any other repository.
+
+For a hand-written README that should not be adopted into managed sections, use `pomade github plan`, then an authorized `pomade github apply --approved-remote`. Both use configured description, topics, and homepage. This path leaves README content unchanged. Supply GH_TOKEN/GITHUB_TOKEN locally or configure POMADE_TOKEN in the target repository's workflow.
+
+After a requested push, verify the remote About/topics or report the exact missing prerequisite. A Git push succeeding does not mean the presentation update succeeded.
