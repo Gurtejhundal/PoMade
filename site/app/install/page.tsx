@@ -29,7 +29,7 @@ export default function InstallPage() {
         <h2>1. Install the CLI</h2>
         <p>
           Install the package attached to the{' '}
-          <a href={RELEASE}>v1.0.0 release</a>. This does not depend on an npm
+          <a href={RELEASE}>v1.0.1 release</a>. This does not depend on an npm
           registry publication.
         </p>
         <CodeBlock>{INSTALL_COMMAND + '\npomade --version'}</CodeBlock>
@@ -50,7 +50,7 @@ export default function InstallPage() {
         <h2>2a. Add PoMade to Codex</h2>
         <CodeBlock>
           {
-            'codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0\ncodex plugin add pomade@pomade'
+            'codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.1\ncodex plugin add pomade@pomade'
           }
         </CodeBlock>
         <p>

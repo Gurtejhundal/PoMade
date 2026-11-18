@@ -96,7 +96,7 @@ export default function DocsPage() {
         accept an explicit repository path.
       </p>
       <section className="document-section">
-        <h2>Install v1.0.0</h2>
+        <h2>Install v1.0.1</h2>
         <pre className="config-example">
           <code>{INSTALL_COMMAND}</code>
         </pre>

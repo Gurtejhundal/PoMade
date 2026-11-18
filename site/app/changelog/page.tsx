@@ -11,6 +11,11 @@ export default function ChangelogPage() {
         release.
       </p>
       <section className="markdown-section">
+        <h2>v1.0.1 <span className="release-label">Latest</span></h2>
+        <p>18 November 2026 · <a href={RELEASE}>Release notes & downloads →</a></p>
+        <ul><li>A clearer plugin pitch: “Repository polish on every push.”</li><li>Every presentation pass includes a concise, factual GitHub About pitch, stored for metadata synchronization.</li><li>Updated CLI and plugin downloads include the new copy and skill guidance.</li></ul>
+      </section>
+      <section className="markdown-section">
         <h2>
           v1.0.0 <span className="release-label">Stable</span>
         </h2>

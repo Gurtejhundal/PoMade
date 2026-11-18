@@ -1,4 +1,4 @@
-export const VERSION = '1.0.0';
+export const VERSION = '1.0.1';
 export const REPOSITORY = 'https://github.com/Gurtejhundal/Pomade';
 export const RELEASE = `${REPOSITORY}/releases/tag/v${VERSION}`;
 export const INSTALL_COMMAND = `npm install -g ${REPOSITORY}/releases/download/v${VERSION}/pomade-${VERSION}.tgz`;

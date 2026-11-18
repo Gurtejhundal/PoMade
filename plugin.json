@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pomade",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Your agent writes the code. PoMade handles the README, media, About, and topics. Every push looks finished.",
   "author": {
     "name": "Gurtej Hundal",

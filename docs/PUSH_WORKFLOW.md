@@ -77,4 +77,4 @@ Bundled agent hooks add context at session start and before shell git push calls
 
 `pomade hooks status` reports installation. `pomade hooks uninstall --approved` removes only the exact managed hook. Existing hooks and custom core.hooksPath settings are preserved; add `pomade hooks check` to an existing hook manager instead. Hooks are local per clone and can be bypassed by Git, so they do not replace the after-push Action.
 
-Codex installation: `codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0`, then `codex plugin add pomade@pomade`. Open a new chat or restart, select PoMade, and review/trust its hooks. This repository marketplace is distinct from public-directory approval.
+Codex installation: `codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.1`, then `codex plugin add pomade@pomade`. Open a new chat or restart, select PoMade, and review/trust its hooks. This repository marketplace is distinct from public-directory approval.

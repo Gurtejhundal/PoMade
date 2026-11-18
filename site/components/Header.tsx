@@ -23,7 +23,7 @@ export function Header() {
         Skip to content
       </a>
       <Link className="site-wordmark" href="/" aria-label="PoMade home">
-        PoMade<span>v1.0.0</span>
+        PoMade<span>v1.0.1</span>
       </Link>
       <nav aria-label="Main navigation">
         {[

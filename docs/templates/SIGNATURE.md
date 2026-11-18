@@ -4,7 +4,7 @@
 
 <p align="center"><em>Code pushed. First impression handled.</em></p>
 
-![Manifest version](https://img.shields.io/badge/version-1.0.0-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](../../LICENSE) [![CI](https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/PoMade/actions)
+![Manifest version](https://img.shields.io/badge/version-1.0.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](../../LICENSE) [![CI](https://github.com/Gurtejhundal/PoMade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/PoMade/actions)
 
 [Quickstart](#quickstart) · [Features](#features) · [Repository](https://github.com/Gurtejhundal/PoMade)
 

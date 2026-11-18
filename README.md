@@ -5,7 +5,7 @@
 
 <p align="center"><em>Code pushed. First impression handled.</em></p>
 
-![Manifest version](https://img.shields.io/badge/version-1.0.0-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
+![Manifest version](https://img.shields.io/badge/version-1.0.1-a76740?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-6d8870?style=flat-square)](LICENSE) [![CI](https://github.com/Gurtejhundal/Pomade/actions/workflows/ci.yml/badge.svg)](https://github.com/Gurtejhundal/Pomade/actions)
 
 [Quickstart](#quickstart) · [Features](#features) · [Website](https://pomade-swart.vercel.app/) · [Repository](https://github.com/Gurtejhundal/Pomade)
 
@@ -129,7 +129,7 @@ The skill includes presentation when preparing a requested push. The GitHub Acti
 
 ## Development and status
 
-Stable release: `1.0.0`. Install the packaged CLI from [GitHub Releases](https://github.com/Gurtejhundal/Pomade/releases/tag/v1.0.0). CLI, development, and hooks require Node.js 22 or newer. The website is a separate build target. npm registry publication is separate.
+Stable release: `1.0.1`. Install the packaged CLI from [GitHub Releases](https://github.com/Gurtejhundal/Pomade/releases/tag/v1.0.1). CLI, development, and hooks require Node.js 22 or newer. The website is a separate build target. npm registry publication is separate.
 
 ```bash
 npm test
@@ -147,7 +147,7 @@ The terminal GIF is typeset playback of actual captured CLI stdout, not a screen
 Codex:
 
 ```sh
-codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0
+codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.1
 codex plugin add pomade@pomade
 ```
 

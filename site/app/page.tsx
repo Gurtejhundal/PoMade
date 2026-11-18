@@ -162,7 +162,7 @@ export default function HomePage() {
           />
           <Shield
             label="release"
-            value="v1.0.0"
+            value="v1.0.1"
             color="#9a6700"
             href={`${repo}/blob/main/package.json`}
           />
@@ -174,7 +174,7 @@ export default function HomePage() {
           />
         </div>
         <p className="markdown-note">
-          <a href={RELEASE}>Download v1.0.0</a>. Install the packaged CLI from
+          <a href={RELEASE}>Download v1.0.1</a>. Install the packaged CLI from
           GitHub Releases.
         </p>
       </section>
@@ -309,7 +309,7 @@ export default function HomePage() {
         <pre>
           <code>
             {
-              'codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.0\ncodex plugin add pomade@pomade'
+              'codex plugin marketplace add Gurtejhundal/Pomade --ref v1.0.1\ncodex plugin add pomade@pomade'
             }
           </code>
         </pre>

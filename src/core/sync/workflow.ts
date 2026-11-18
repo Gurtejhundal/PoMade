@@ -16,7 +16,7 @@ jobs:
         with:
           ref: main
       # Pin the action to a reviewed commit SHA for your repository.
-      - uses: Gurtejhundal/Pomade@v1.0.0
+      - uses: Gurtejhundal/Pomade@v1.0.1
         with:
           metadata-token: \${{ secrets.POMADE_TOKEN }}
 `;
