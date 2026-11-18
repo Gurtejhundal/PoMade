@@ -1,0 +1,34 @@
+name: Publish release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify release version
+        run: |
+          test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
+          test -f "docs/releases/$GITHUB_REF_NAME.md"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: Package and smoke-test CLI
+        run: |
+          npm pack
+          npm install --prefix "$RUNNER_TEMP/pomade-smoke" ./pomade-*.tgz --ignore-scripts
+          "$RUNNER_TEMP/pomade-smoke/node_modules/.bin/pomade" --help
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          flags=()
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then flags+=(--prerelease); fi
+          gh release create "$GITHUB_REF_NAME" ./pomade-*.tgz --verify-tag --title "PoMade $GITHUB_REF_NAME" --notes-file "docs/releases/$GITHUB_REF_NAME.md" "${flags[@]}"
